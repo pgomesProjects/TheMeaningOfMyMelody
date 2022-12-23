@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BeatScroller : MonoBehaviour
 {
-    [SerializeField] private float beatTempo;
     private bool canScroll;
     private float scrollSpeed;
 
@@ -12,7 +11,7 @@ public class BeatScroller : MonoBehaviour
     void Start()
     {
         canScroll = true;
-        scrollSpeed = beatTempo / 60f;
+        scrollSpeed = LevelManager.Instance.beatTempo / 60f * LevelManager.Instance.scrollSpeed;
     }
 
     // Update is called once per frame
@@ -20,7 +19,7 @@ public class BeatScroller : MonoBehaviour
     {
         if (canScroll)
         {
-            transform.position += new Vector3(scrollSpeed * Time.deltaTime, 0f, 0f);
+            transform.position += new Vector3(-(scrollSpeed * Time.deltaTime) * GameSettings.leftScrollMultiplier, 0f, 0f);
         }
     }
 }
