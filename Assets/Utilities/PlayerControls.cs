@@ -80,6 +80,24 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Open Song Editor"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc338ffc-d652-40ad-9364-879af8c6c093"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Close Song Editor"",
+                    ""type"": ""Button"",
+                    ""id"": ""6dc2cbf7-856a-41e3-b958-eefa943d3a3b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -212,6 +230,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Right Arrow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""16a4f7cf-ac81-44b2-9ea8-a04b42d8a5be"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Song Editor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7e0c9d1c-81a2-4654-b374-86f9780e662b"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Close Song Editor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -805,6 +845,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player_DownArrow = m_Player.FindAction("Down Arrow", throwIfNotFound: true);
         m_Player_UpArrow = m_Player.FindAction("Up Arrow", throwIfNotFound: true);
         m_Player_RightArrow = m_Player.FindAction("Right Arrow", throwIfNotFound: true);
+        m_Player_OpenSongEditor = m_Player.FindAction("Open Song Editor", throwIfNotFound: true);
+        m_Player_CloseSongEditor = m_Player.FindAction("Close Song Editor", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -882,6 +924,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_DownArrow;
     private readonly InputAction m_Player_UpArrow;
     private readonly InputAction m_Player_RightArrow;
+    private readonly InputAction m_Player_OpenSongEditor;
+    private readonly InputAction m_Player_CloseSongEditor;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -892,6 +936,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @DownArrow => m_Wrapper.m_Player_DownArrow;
         public InputAction @UpArrow => m_Wrapper.m_Player_UpArrow;
         public InputAction @RightArrow => m_Wrapper.m_Player_RightArrow;
+        public InputAction @OpenSongEditor => m_Wrapper.m_Player_OpenSongEditor;
+        public InputAction @CloseSongEditor => m_Wrapper.m_Player_CloseSongEditor;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -919,6 +965,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @RightArrow.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightArrow;
                 @RightArrow.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightArrow;
                 @RightArrow.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightArrow;
+                @OpenSongEditor.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenSongEditor;
+                @OpenSongEditor.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenSongEditor;
+                @OpenSongEditor.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnOpenSongEditor;
+                @CloseSongEditor.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
+                @CloseSongEditor.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
+                @CloseSongEditor.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -941,6 +993,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @RightArrow.started += instance.OnRightArrow;
                 @RightArrow.performed += instance.OnRightArrow;
                 @RightArrow.canceled += instance.OnRightArrow;
+                @OpenSongEditor.started += instance.OnOpenSongEditor;
+                @OpenSongEditor.performed += instance.OnOpenSongEditor;
+                @OpenSongEditor.canceled += instance.OnOpenSongEditor;
+                @CloseSongEditor.started += instance.OnCloseSongEditor;
+                @CloseSongEditor.performed += instance.OnCloseSongEditor;
+                @CloseSongEditor.canceled += instance.OnCloseSongEditor;
             }
         }
     }
@@ -1103,6 +1161,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnDownArrow(InputAction.CallbackContext context);
         void OnUpArrow(InputAction.CallbackContext context);
         void OnRightArrow(InputAction.CallbackContext context);
+        void OnOpenSongEditor(InputAction.CallbackContext context);
+        void OnCloseSongEditor(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
