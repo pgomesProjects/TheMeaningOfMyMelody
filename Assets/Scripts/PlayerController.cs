@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerControls = new PlayerControls();
+        songEditor.SetActive(false);
     }
 
     private void OnEnable()
@@ -31,11 +32,13 @@ public class PlayerController : MonoBehaviour
 
     public void OpenSongEditor(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Opening Song Editor...");
         songEditor.SetActive(true);
     }
 
     public void CloseSongEditor(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Closing Song Editor...");
         songEditor.SetActive(false);
     }
 }

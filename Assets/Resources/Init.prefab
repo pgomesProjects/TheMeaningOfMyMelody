@@ -47,13 +47,13 @@ MonoBehaviour:
   bgmMixer: {fileID: 5802316482864546721, guid: 94844d021d9dab44c818172665a22062, type: 2}
   sfxMixer: {fileID: 4279340188021939522, guid: 887098c5e98c8934d8a976047ed0ad9e, type: 2}
   sounds:
-  - name: CandyInst
+  - name: TestSongInst
     clip: {fileID: 8300000, guid: 5823ef54b547e5740839be05c71453c4, type: 3}
     pitch: 1
     loop: 0
     soundType: 0
     source: {fileID: 0}
-  - name: CandyVoices
+  - name: TestSongVoices
     clip: {fileID: 8300000, guid: ea03507ec0cb7de47b1efa7c34785dad, type: 3}
     pitch: 1
     loop: 0

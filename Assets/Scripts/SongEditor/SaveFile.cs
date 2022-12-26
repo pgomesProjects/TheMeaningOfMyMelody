@@ -6,8 +6,11 @@ using SFB;
 
 public class SaveFile : MonoBehaviour
 {
-    public void OnDataSave(string data)
+    public void OnDataSave()
     {
+        //Get data from chart in readable form
+        string data = GetComponent<SongEditorManager>().GetChartData();
+
         //Open the save file panel
         string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "song_data", "json");
 

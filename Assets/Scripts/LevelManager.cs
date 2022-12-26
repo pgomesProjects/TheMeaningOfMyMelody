@@ -64,4 +64,9 @@ public class LevelManager : MonoBehaviour
     {
         return (double)Instance.currentSongAudioSource.timeSamples / Instance.currentSongAudioSource.clip.frequency;
     }
+
+    public static double GetFullSongDuration()
+    {
+        return (double)Instance.currentSongAudioSource.clip.length;
+    }
 }

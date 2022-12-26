@@ -4,32 +4,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+[System.Serializable]
+public class Tile
 {
-    [SerializeField] private Color baseColor, offsetColor, hightlightColor;
-    [SerializeField] private Image tileImage;
+    public string name;
 
-    private Color currentColor;
+    public AudioClip clip;
 
-    public void CheckColor(bool isOffset)
-    {
-        tileImage.color = isOffset ? offsetColor : baseColor;
-        currentColor = tileImage.color;
-    }
+    [Range(.1f, 3f)]
+    public float pitch = 1;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        //Click action here
-    }
+    public bool loop;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        tileImage.color = hightlightColor;
-    }
+    public SOUNDTYPE soundType;
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        tileImage.color = currentColor;
-    }
+    [HideInInspector]
+    public AudioSource source;
 
 }

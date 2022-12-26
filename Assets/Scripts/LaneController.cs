@@ -20,13 +20,7 @@ public class LaneController : MonoBehaviour
 
     private void AddNote()
     {
-        //Manually adding notes
-        timeStamps.Add(10);
-        timeStamps.Add(11);
-        timeStamps.Add(11.5);
-        timeStamps.Add(12);
-        timeStamps.Add(13);
-        timeStamps.Add(14);
+
     }
 
     // Update is called once per frame
