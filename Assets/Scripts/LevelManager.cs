@@ -15,6 +15,8 @@ public class LevelManager : MonoBehaviour
     public string CurrentSong;
     private AudioSource currentSongAudioSource;
 
+    [SerializeField] private LaneController[] lanes;
+
     public float songDelaySeconds;
     public double marginOfErrorSeconds;
     public float inputDelayMilliseconds;
@@ -51,11 +53,14 @@ public class LevelManager : MonoBehaviour
     private void SongSetup()
     {
         currentSongAudioSource = FindObjectOfType<AudioManager>().GetSoundAudioSource(CurrentSong+"Inst");
+        ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
         Invoke(nameof(StartSong), songDelaySeconds);
     }
 
     private void StartSong()
     {
+        ReadSongData.AddNotesToLanes(ref lanes);
+
         FindObjectOfType<AudioManager>().Play(CurrentSong+"Inst", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
         FindObjectOfType<AudioManager>().Play(CurrentSong+"Voices", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
     }
@@ -69,4 +74,6 @@ public class LevelManager : MonoBehaviour
     {
         return (double)Instance.currentSongAudioSource.clip.length;
     }
+
+    public LaneController GetLaneAt(int index) => lanes[index];
 }

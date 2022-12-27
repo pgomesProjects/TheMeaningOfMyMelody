@@ -12,7 +12,14 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private Transform editorArrowParent;
     [SerializeField] private Sprite[] editorArrows;
 
+    private List<GameObject> chartObjects;
+
     private float positionSnap = 1f;
+
+    private void OnEnable()
+    {
+        chartObjects = new List<GameObject>();
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -21,16 +28,13 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void AddArrowToChart()
     {
-        //Create arrow object
-        GameObject newArrow = Instantiate(new GameObject(), editorArrowParent);
-
-        //Adjust position
-        newArrow.AddComponent<RectTransform>().position = highlightTransform.position;
+        Vector2 newNotePos = highlightTransform.localPosition;
+        newNotePos -= new Vector2(50, 50);
 
         int arrowIndex = 0;
 
         //Add arrow based on row position
-        switch (newArrow.GetComponent<RectTransform>().localPosition.y - 50)
+        switch (newNotePos.y)
         {
             case 0:
                 arrowIndex = 3;
@@ -46,15 +50,39 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 break;
         }
 
+        Vector2 chartNoteData = new Vector2(arrowIndex, newNotePos.x);
 
-        newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
+        //If the note already exists in the chart, remove it
+        if (_songEditorManager.NoteExistsInChart(chartNoteData))
+        {
+            int index = _songEditorManager.GetNoteIndex(chartNoteData);
+            _songEditorManager.RemoveNoteFromChart(chartNoteData);
 
-        newArrow.name = "Note";
+            GameObject noteToDestroy = chartObjects[index];
 
-        //Add to chart
-        _songEditorManager.AddNoteToChart(new Vector2(arrowIndex, newArrow.GetComponent<RectTransform>().localPosition.x - 50));
+            chartObjects.RemoveAt(index);
+            Destroy(noteToDestroy);
+        }
 
-        _songEditorManager.GetChartData();
+        //If not, add the note
+        else
+        {
+            //Create arrow object
+            GameObject newArrow = new GameObject();
+
+            //Add to parent
+            newArrow.transform.parent = editorArrowParent;
+
+            //Adjust position
+            newArrow.AddComponent<RectTransform>().position = highlightTransform.position;
+
+            newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
+
+            newArrow.name = "Note";
+
+            _songEditorManager.AddNoteToChart(chartNoteData);
+            chartObjects.Add(newArrow);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -85,7 +113,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void SnapPosition(ref Vector3 highlightPosition)
     {
-        highlightPosition.x = (int)FloorToMultiple(highlightPosition.x, 100 * positionSnap);
+        highlightPosition.x = (int)FloorToMultiple(highlightPosition.x, 100 / positionSnap);
         highlightPosition.y = (int)FloorToMultiple(highlightPosition.y, 100);
     }
 
@@ -104,5 +132,10 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(), screenPos, null, out localPos);
 
         return localPos;
+    }
+
+    public void SetBeatSnap(float beatSnap)
+    {
+        positionSnap = beatSnap;
     }
 }

@@ -15,12 +15,11 @@ public class LaneController : MonoBehaviour
     {
         notes = new List<NoteController>();
         timeStamps = new List<double>();
-        AddNote();
     }
 
-    private void AddNote()
+    public void AddNote(double timeStamp)
     {
-
+        timeStamps.Add(timeStamp);
     }
 
     // Update is called once per frame

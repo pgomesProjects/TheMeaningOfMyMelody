@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noteDirection: 0
-  notePrefab: {fileID: 7980298360169452581, guid: e6dcd1f1a0a91a34b91f50da66b3604b, type: 3}
+  notePrefab: {fileID: 9150138601455855037, guid: adba0ea7d656ce444afda3b16c60bbbd, type: 3}
