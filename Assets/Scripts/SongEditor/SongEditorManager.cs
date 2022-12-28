@@ -85,7 +85,7 @@ public class SongEditorManager : MonoBehaviour
         return -1;
     }
 
-    public string GetChartData(CHARTTYPE chartType)
+    public List<Note> GetChartData(CHARTTYPE chartType)
     {
         List<Vector2> chartCopy = new List<Vector2>();
 
@@ -99,21 +99,16 @@ public class SongEditorManager : MonoBehaviour
                 break;
         }
 
-        string chartData = "";
+        List<Note> chartData = new List<Note>();
 
         for (int i = 0; i < chartCopy.Count; i++)
         {
-            string newNote = "";
-            newNote += chartCopy[i].x + ",";
+            int notePosition = (int)chartCopy[i].x;
+            double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetRows() * ((double)chartCopy[i].y / 100f));
 
-            double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetRows() * (playerChart[i].y / 100f));
-            newNote += timeStamp;
+            Note newNote = new Note(notePosition, timeStamp);
 
-            //If not the last line being written, add a new line for it
-            if (i < chartCopy.Count - 1)
-                newNote += "\n";
-
-            chartData += newNote;
+            chartData.Add(newNote);
         }
 
         return chartData;
@@ -156,7 +151,4 @@ public class SongEditorManager : MonoBehaviour
 
         songPos.text = seconds + " sec / " + totalTime + " sec";
     }
-
-    public List<Vector2> GetOpponentChart() => opponentChart;
-    public List<Vector2> GetPlayerChart() => playerChart;
 }
