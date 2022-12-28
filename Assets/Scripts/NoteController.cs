@@ -21,8 +21,8 @@ public class NoteController : MonoBehaviour
 
         spawnPosition = transform.parent.position;
 
-        float despawnX = (-8 * GameSettings.leftScrollMultiplier) - (spawnPosition.x - (-8 * GameSettings.leftScrollMultiplier));
-        despawnPosition = new Vector3(despawnX, spawnPosition.y, spawnPosition.z);
+        float despawnY = (4f * GameSettings.downScrollMultiplier) + ((Mathf.Abs(spawnPosition.y) + 4f) * GameSettings.downScrollMultiplier);
+        despawnPosition = new Vector3(spawnPosition.x, despawnY, spawnPosition.z);
 
         noteTexture = GetComponentInChildren<SpriteRenderer>();
     }
@@ -49,7 +49,7 @@ public class NoteController : MonoBehaviour
     void Update()
     {
         double timeSinceInstantiated = LevelManager.GetSongTime() - timeInstantiated;
-        float t = (float)(timeSinceInstantiated / (LevelManager.Instance.noteTime * 2));
+        float t = (float)(timeSinceInstantiated / (LevelManager.Instance.GetScrollSpeedTime() * 2));
 
         if(t > 1)
             Destroy(gameObject);

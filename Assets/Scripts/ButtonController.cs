@@ -10,6 +10,7 @@ public class ButtonController : MonoBehaviour
     private PlayerControls playerControls;
 
     [SerializeField] private NOTETYPE buttonType;
+    [SerializeField] private CharacterAnimationController playerCharacterAnimator;
 
     private Color defaultColor;
     [SerializeField] private Color pressColor;
@@ -109,6 +110,7 @@ public class ButtonController : MonoBehaviour
         arrowSpriteRenderer.color = pressColor;
         isPressed = true;
         arrowSpriteRenderer.gameObject.transform.localScale = new Vector3(pressedScale, pressedScale, pressedScale);
+        StartCharacterDirection();
     }
 
     private void OnButtonLift(InputAction.CallbackContext ctx)
@@ -116,6 +118,45 @@ public class ButtonController : MonoBehaviour
         arrowSpriteRenderer.color = defaultColor;
         isPressed = false;
         arrowSpriteRenderer.gameObject.transform.localScale = Vector3.one;
+        StopCharacterDirection();
+    }
+
+    private void StartCharacterDirection()
+    {
+        switch (buttonType)
+        {
+            case NOTETYPE.LEFT:
+                playerCharacterAnimator.CharacterDirection("Left");
+                break;
+            case NOTETYPE.DOWN:
+                playerCharacterAnimator.CharacterDirection("Down");
+                break;
+            case NOTETYPE.UP:
+                playerCharacterAnimator.CharacterDirection("Up");
+                break;
+            case NOTETYPE.RIGHT:
+                playerCharacterAnimator.CharacterDirection("Right");
+                break;
+        }
+    }
+
+    private void StopCharacterDirection()
+    {
+        switch (buttonType)
+        {
+            case NOTETYPE.LEFT:
+                playerCharacterAnimator.ResetCharacterDirection("Left");
+                break;
+            case NOTETYPE.DOWN:
+                playerCharacterAnimator.ResetCharacterDirection("Down");
+                break;
+            case NOTETYPE.UP:
+                playerCharacterAnimator.ResetCharacterDirection("Up");
+                break;
+            case NOTETYPE.RIGHT:
+                playerCharacterAnimator.ResetCharacterDirection("Right");
+                break;
+        }
     }
 
     public bool IsPressed() => isPressed;

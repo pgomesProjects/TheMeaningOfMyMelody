@@ -7,34 +7,64 @@ public class SongEditorManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI songPos;
     [SerializeField] private TextMeshProUGUI beatSnap;
-    private List<Vector2> chart;
+    private List<Vector2> opponentChart;
+    private List<Vector2> playerChart;
 
     private float[] beatSnaps = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f, 6f, 12f};
-    private int currentSnapIndex;
+    private int currentSnapIndex = 3;
 
     private void OnEnable()
     {
-        chart = new List<Vector2>();
+        opponentChart = new List<Vector2>();
+        playerChart = new List<Vector2>();
         currentSnapIndex = 3;
         UpdateSongPosText();
         //GetComponent<OpenFile>().OpenDataFile();
     }
 
-    public void AddNoteToChart(Vector2 noteData)
+    public void AddNoteToChart(CHARTTYPE chartType, Vector2 noteData)
     {
-        chart.Add(noteData);
-    }
-
-    public void RemoveNoteFromChart(Vector2 noteData)
-    {
-        chart.Remove(noteData);
-    }
-
-    public bool NoteExistsInChart(Vector2 noteData)
-    {
-        foreach (var chart in chart)
+        switch (chartType)
         {
-            Debug.Log(chart + " vs. " + noteData);
+            case CHARTTYPE.OPPONENT:
+                opponentChart.Add(noteData);
+                break;
+            case CHARTTYPE.PLAYER:
+                playerChart.Add(noteData);
+                break;
+        }
+    }
+
+    public void RemoveNoteFromChart(CHARTTYPE chartType, Vector2 noteData)
+    {
+        switch (chartType)
+        {
+            case CHARTTYPE.OPPONENT:
+                opponentChart.Remove(noteData);
+                break;
+            case CHARTTYPE.PLAYER:
+                playerChart.Remove(noteData);
+                break;
+        }
+    }
+
+    public bool NoteExistsInChart(CHARTTYPE chartType, Vector2 noteData)
+    {
+        List<Vector2> chartCopy = new List<Vector2>();
+
+        switch (chartType)
+        {
+            case CHARTTYPE.OPPONENT:
+                chartCopy = opponentChart;
+                break;
+            case CHARTTYPE.PLAYER:
+                chartCopy = playerChart;
+                break;
+        }
+
+        foreach (var chart in chartCopy)
+        {
+            //Debug.Log(chart + " vs. " + noteData);
             if(chart == noteData)
                 return true;
         }
@@ -42,22 +72,45 @@ public class SongEditorManager : MonoBehaviour
         return false;
     }
 
-    public int GetNoteIndex(Vector2 noteData) => chart.IndexOf(noteData);
-
-    public string GetChartData()
+    public int GetNoteIndex(CHARTTYPE chartType, Vector2 noteData)
     {
+        switch (chartType)
+        {
+            case CHARTTYPE.OPPONENT:
+                return opponentChart.IndexOf(noteData);
+            case CHARTTYPE.PLAYER:
+                return playerChart.IndexOf(noteData);
+        }
+
+        return -1;
+    }
+
+    public string GetChartData(CHARTTYPE chartType)
+    {
+        List<Vector2> chartCopy = new List<Vector2>();
+
+        switch (chartType)
+        {
+            case CHARTTYPE.OPPONENT:
+                chartCopy = opponentChart;
+                break;
+            case CHARTTYPE.PLAYER:
+                chartCopy = playerChart;
+                break;
+        }
+
         string chartData = "";
 
-        for (int i = 0; i < chart.Count; i++)
+        for (int i = 0; i < chartCopy.Count; i++)
         {
             string newNote = "";
-            newNote += chart[i].x + ",";
+            newNote += chartCopy[i].x + ",";
 
-            double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetColumns() * (chart[i].y / 100f));
+            double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetRows() * (playerChart[i].y / 100f));
             newNote += timeStamp;
 
             //If not the last line being written, add a new line for it
-            if (i < chart.Count - 1)
+            if (i < chartCopy.Count - 1)
                 newNote += "\n";
 
             chartData += newNote;
@@ -88,17 +141,22 @@ public class SongEditorManager : MonoBehaviour
 
     private void UpdateBeatSnap()
     {
-        GetComponentInChildren<EditorGridEvents>().SetBeatSnap(beatSnaps[currentSnapIndex]);
         beatSnap.text = (16f * beatSnaps[currentSnapIndex]).ToString() + "th";
     }
 
+    public float GetPositionSnap() => beatSnaps[currentSnapIndex];
     public void UpdateSongPosText()
     {
-        float gridXPos = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().localPosition.x;
-        float gridWidth = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().sizeDelta.x;
+        float gridYPos = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().localPosition.y;
+        float gridHeight = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().sizeDelta.y;
 
-        double seconds = LevelManager.GetFullSongDuration() * -(gridXPos / gridWidth);
+        double seconds = Mathf.Round((float)(LevelManager.GetFullSongDuration() * (gridYPos / gridHeight)) * 100f) / 100f;
 
-        songPos.text = (Mathf.Round((float)seconds * 100f) / 100f).ToString() + " sec / " + (Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f).ToString() + " sec";
+        double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
+
+        songPos.text = seconds + " sec / " + totalTime + " sec";
     }
+
+    public List<Vector2> GetOpponentChart() => opponentChart;
+    public List<Vector2> GetPlayerChart() => playerChart;
 }

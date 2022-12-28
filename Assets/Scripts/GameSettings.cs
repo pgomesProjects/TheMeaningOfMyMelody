@@ -4,6 +4,6 @@ using UnityEngine;
 
 public static class GameSettings
 {
-    //1 = left scroll, -1 right scroll
-    public static int leftScrollMultiplier = 1;
+    //1 = up scroll, -1 down scroll
+    public static int downScrollMultiplier = 1;
 }

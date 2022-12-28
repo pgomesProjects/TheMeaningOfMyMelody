@@ -21,7 +21,7 @@ public class LevelManager : MonoBehaviour
     public double marginOfErrorSeconds;
     public float inputDelayMilliseconds;
 
-    public float noteTime;
+    private float defaultNoteTime = 1.47f;
 
     private void Awake()
     {
@@ -37,15 +37,15 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateBoardSettings()
     {
-        if(GameSettings.leftScrollMultiplier == -1)
+        if(GameSettings.downScrollMultiplier == -1)
         {
             //Flip the position of the arrows and the lanes
             Vector3 newArrowPos = arrowHolder.position;
-            newArrowPos.x = -newArrowPos.x;
+            newArrowPos.y = -newArrowPos.y;
             arrowHolder.position = newArrowPos;
 
             Vector3 newLanePos = laneHolder.position;
-            newLanePos.x = -newLanePos.x;
+            newLanePos.y = -newLanePos.y;
             laneHolder.position = newLanePos;
         }
     }
@@ -65,6 +65,11 @@ public class LevelManager : MonoBehaviour
         FindObjectOfType<AudioManager>().Play(CurrentSong+"Voices", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
     }
 
+    public double GetScrollSpeedTime()
+    {
+        return defaultNoteTime / scrollSpeed;
+    }
+
     public static double GetSongTime()
     {
         return (double)Instance.currentSongAudioSource.timeSamples / Instance.currentSongAudioSource.clip.frequency;
@@ -72,7 +77,10 @@ public class LevelManager : MonoBehaviour
 
     public static double GetFullSongDuration()
     {
-        return (double)Instance.currentSongAudioSource.clip.length;
+        if(Instance != null && Instance.currentSongAudioSource != null && Instance.currentSongAudioSource.clip != null)
+            return (double)Instance.currentSongAudioSource.clip.length;
+
+        return 0.0;
     }
 
     public LaneController GetLaneAt(int index) => lanes[index];

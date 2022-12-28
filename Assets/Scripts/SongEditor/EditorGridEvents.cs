@@ -5,16 +5,17 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+public enum CHARTTYPE { OPPONENT, PLAYER };
+
 public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [SerializeField] private SongEditorManager _songEditorManager;
+    [SerializeField] private CHARTTYPE chartType;
     [SerializeField] private RectTransform highlightTransform;
     [SerializeField] private Transform editorArrowParent;
     [SerializeField] private Sprite[] editorArrows;
 
     private List<GameObject> chartObjects;
-
-    private float positionSnap = 1f;
 
     private void OnEnable()
     {
@@ -29,34 +30,16 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private void AddArrowToChart()
     {
         Vector2 newNotePos = highlightTransform.localPosition;
-        newNotePos -= new Vector2(50, 50);
 
-        int arrowIndex = 0;
-
-        //Add arrow based on row position
-        switch (newNotePos.y)
-        {
-            case 0:
-                arrowIndex = 3;
-                break;
-            case 100:
-                arrowIndex = 2;
-                break;
-            case 200:
-                arrowIndex = 1;
-                break;
-            case 300:
-                arrowIndex = 0;
-                break;
-        }
-
-        Vector2 chartNoteData = new Vector2(arrowIndex, newNotePos.x);
+        //Add arrow based on column position
+        int arrowIndex = (int)(newNotePos.x / 100f);
+        Vector2 chartNoteData = new Vector2(arrowIndex, newNotePos.y);
 
         //If the note already exists in the chart, remove it
-        if (_songEditorManager.NoteExistsInChart(chartNoteData))
+        if (_songEditorManager.NoteExistsInChart(chartType, chartNoteData))
         {
-            int index = _songEditorManager.GetNoteIndex(chartNoteData);
-            _songEditorManager.RemoveNoteFromChart(chartNoteData);
+            int index = _songEditorManager.GetNoteIndex(chartType, chartNoteData);
+            _songEditorManager.RemoveNoteFromChart(chartType, chartNoteData);
 
             GameObject noteToDestroy = chartObjects[index];
 
@@ -74,13 +57,17 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
             newArrow.transform.parent = editorArrowParent;
 
             //Adjust position
-            newArrow.AddComponent<RectTransform>().position = highlightTransform.position;
+            newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
+            newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
+            newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
+            newArrow.GetComponent<RectTransform>().localPosition = highlightTransform.localPosition;
+            newArrow.GetComponent<RectTransform>().localScale = Vector3.one;
 
             newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
 
             newArrow.name = "Note";
 
-            _songEditorManager.AddNoteToChart(chartNoteData);
+            _songEditorManager.AddNoteToChart(chartType, chartNoteData);
             chartObjects.Add(newArrow);
         }
     }
@@ -104,17 +91,14 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             //Debug.Log("Highlight Pos: " + highlightPosition);
 
-            //Offset based on pivot
-            highlightPosition += new Vector3(50, 50, 0);
-
             highlightTransform.localPosition = highlightPosition;
         }
     }
 
     private void SnapPosition(ref Vector3 highlightPosition)
     {
-        highlightPosition.x = (int)FloorToMultiple(highlightPosition.x, 100 / positionSnap);
-        highlightPosition.y = (int)FloorToMultiple(highlightPosition.y, 100);
+        highlightPosition.x = (int)FloorToMultiple(highlightPosition.x, 100);
+        highlightPosition.y = (int)FloorToMultiple(highlightPosition.y, 100 / _songEditorManager.GetPositionSnap());
     }
 
     private double FloorToMultiple(float number, double multiple)
@@ -132,10 +116,5 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(), screenPos, null, out localPos);
 
         return localPos;
-    }
-
-    public void SetBeatSnap(float beatSnap)
-    {
-        positionSnap = beatSnap;
     }
 }

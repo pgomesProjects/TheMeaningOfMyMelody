@@ -27,8 +27,9 @@ public class LaneController : MonoBehaviour
     {
         if(spawnIndex < timeStamps.Count)
         {
-            if(LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.noteTime)
+            if(LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.GetScrollSpeedTime())
             {
+                //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
                 var note = Instantiate(notePrefab, transform);
                 NoteController currentNote = note.GetComponent<NoteController>();
                 currentNote.SetNoteDirection(noteDirection);
