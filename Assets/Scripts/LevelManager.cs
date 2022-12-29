@@ -6,6 +6,8 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] private Transform arrowHolder;
     [SerializeField] private Transform laneHolder;
+    [SerializeField] private Transform accuracyIndicatorParent;
+    [SerializeField] private AccuracyIndicatorController accuracyIndicator;
 
     public float beatTempo = 120f;
     public float scrollSpeed = 1f;
@@ -18,7 +20,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private LaneController[] lanes;
 
     public float songDelaySeconds;
-    public double marginOfErrorSeconds;
+    public float marginOfError = 0.1f;
+    public float goodHitMargin = 0.75f;
+    public float greatHitMargin = 0.5f;
+    public float perfectHitMargin = 0.25f;
     public float inputDelayMilliseconds;
 
     private float defaultNoteTime = 1.47f;
@@ -81,6 +86,13 @@ public class LevelManager : MonoBehaviour
             return (double)Instance.currentSongAudioSource.clip.length;
 
         return 0.0;
+    }
+
+    public void ShowAccuracyIndicator(ACCURACYINDICATOR accuracy)
+    {
+        AccuracyIndicatorController currentIndicator = Instantiate(accuracyIndicator, accuracyIndicatorParent);
+        currentIndicator.GetComponent<RectTransform>().localPosition = accuracyIndicator.GetComponent<RectTransform>().localPosition;
+        currentIndicator.UpdateIndicator(accuracy);
     }
 
     public LaneController GetLaneAt(int index) => lanes[index];

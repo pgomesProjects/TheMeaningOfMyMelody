@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class NoteController : MonoBehaviour
 {
-    private bool canBePressed;
     private SpriteRenderer noteTexture;
 
     private double timeInstantiated;
@@ -16,7 +15,6 @@ public class NoteController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        canBePressed = false;
         timeInstantiated = LevelManager.GetSongTime();
 
         spawnPosition = transform.parent.position;
@@ -59,7 +57,7 @@ public class NoteController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+/*    private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "ArrowButton")
         {
@@ -73,15 +71,7 @@ public class NoteController : MonoBehaviour
         {
             canBePressed = false;
         }
-    }
-
-    public void NoteHit()
-    {
-        if (canBePressed)
-        {
-            gameObject.SetActive(false);
-        }
-    }
+    }*/
 
     public float GetAssignedTime() => assignedTime;
     public void SetAssignedTime(float newTime)

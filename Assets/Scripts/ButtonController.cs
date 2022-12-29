@@ -18,8 +18,6 @@ public class ButtonController : MonoBehaviour
 
     private SpriteRenderer arrowSpriteRenderer;
 
-    private bool isPressed;
-
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -98,17 +96,16 @@ public class ButtonController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.tag == "Note")
+/*        if(collision.tag == "Note")
         {
             if(isPressed)
                 collision.GetComponent<NoteController>().NoteHit();
-        }
+        }*/
     }
 
     private void OnButtonPress(InputAction.CallbackContext ctx)
     {
         arrowSpriteRenderer.color = pressColor;
-        isPressed = true;
         arrowSpriteRenderer.gameObject.transform.localScale = new Vector3(pressedScale, pressedScale, pressedScale);
         StartCharacterDirection();
     }
@@ -116,7 +113,6 @@ public class ButtonController : MonoBehaviour
     private void OnButtonLift(InputAction.CallbackContext ctx)
     {
         arrowSpriteRenderer.color = defaultColor;
-        isPressed = false;
         arrowSpriteRenderer.gameObject.transform.localScale = Vector3.one;
         StopCharacterDirection();
     }
@@ -158,6 +154,4 @@ public class ButtonController : MonoBehaviour
                 break;
         }
     }
-
-    public bool IsPressed() => isPressed;
 }
