@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32199736894cd6e47996ae7e732adc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chartType: 1
   noteDirection: 0
   notePrefab: {fileID: 9150138601455855037, guid: adba0ea7d656ce444afda3b16c60bbbd, type: 3}

@@ -20,14 +20,44 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private void OnEnable()
     {
         chartObjects = new List<GameObject>();
+        EmptyGrid();
+        Invoke("LoadGrid", 0.1f);
+    }
+
+    private void EmptyGrid()
+    {
+        foreach(Transform child in editorArrowParent)
+            Destroy(child.gameObject);
+    }
+
+    private void LoadGrid()
+    {
+        List<Note> loadNotes = new List<Note>();
+        switch (chartType)
+        {
+            case CHARTTYPE.OPPONENT:
+                loadNotes.AddRange(LevelManager.Instance.GetOpponentChartData());
+                break;
+            case CHARTTYPE.PLAYER:
+                loadNotes.AddRange(LevelManager.Instance.GetPlayerChartData());
+                break;
+        }
+
+        foreach(var note in loadNotes)
+        {
+            float yPosition = ((float)note.timeStamp / (Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInParent<GridManager>().GetRows())) * -100f;
+            Vector2 chartNoteData = new Vector2(note.noteDirection, yPosition);
+            Vector2 localPosition = new Vector2(chartNoteData.x * 100f, chartNoteData.y);
+            CreateArrow(localPosition, note.noteDirection, chartNoteData);
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        AddArrowToChart();
+        CheckArrowOnChart();
     }
 
-    private void AddArrowToChart()
+    private void CheckArrowOnChart()
     {
         Vector2 newNotePos = highlightTransform.localPosition;
 
@@ -50,26 +80,54 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
         //If not, add the note
         else
         {
-            //Create arrow object
-            GameObject newArrow = new GameObject();
-
-            //Add to parent
-            newArrow.transform.parent = editorArrowParent;
-
-            //Adjust position
-            newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
-            newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
-            newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
-            newArrow.GetComponent<RectTransform>().localPosition = highlightTransform.localPosition;
-            newArrow.GetComponent<RectTransform>().localScale = Vector3.one;
-
-            newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
-
-            newArrow.name = "Note";
-
-            _songEditorManager.AddNoteToChart(chartType, chartNoteData);
-            chartObjects.Add(newArrow);
+            CreateArrow(arrowIndex, chartNoteData);
         }
+    }
+
+    private void CreateArrow(int arrowIndex, Vector2 chartNoteData)
+    {
+        //Create arrow object
+        GameObject newArrow = new GameObject();
+
+        //Add to parent
+        newArrow.transform.parent = editorArrowParent;
+
+        //Adjust position
+        newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
+        newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
+        newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
+        newArrow.GetComponent<RectTransform>().localPosition = highlightTransform.localPosition;
+        newArrow.GetComponent<RectTransform>().localScale = Vector3.one;
+
+        newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
+
+        newArrow.name = "Note";
+
+        _songEditorManager.AddNoteToChart(chartType, chartNoteData);
+        chartObjects.Add(newArrow);
+    }
+
+    private void CreateArrow(Vector3 localPosition, int arrowIndex, Vector2 chartNoteData)
+    {
+        //Create arrow object
+        GameObject newArrow = new GameObject();
+
+        //Add to parent
+        newArrow.transform.parent = editorArrowParent;
+
+        //Adjust position
+        newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
+        newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
+        newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
+        newArrow.GetComponent<RectTransform>().localPosition = localPosition;
+        newArrow.GetComponent<RectTransform>().localScale = Vector3.one;
+
+        newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
+
+        newArrow.name = "Note";
+
+        _songEditorManager.AddNoteToChart(chartType, chartNoteData);
+        chartObjects.Add(newArrow);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

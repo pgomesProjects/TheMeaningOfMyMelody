@@ -20,6 +20,11 @@ public class OpenFile : MonoBehaviour
         }
     }
 
+    public void LoadFile(string url)
+    {
+        StartCoroutine(OutputRoutineOpen(new System.Uri(url).AbsoluteUri));
+    }
+
     private IEnumerator OutputRoutineOpen(string url)
     {
         //Get the file
@@ -37,7 +42,9 @@ public class OpenFile : MonoBehaviour
         {
             Debug.Log("File Loaded: " + url);
             fileData = www.downloadHandler.text;
-            Debug.Log("Data: " + fileData);
+            //Debug.Log("Data: " + fileData);
         }
     }
+
+    public string GetFileData() => fileData;
 }

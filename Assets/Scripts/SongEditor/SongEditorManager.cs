@@ -18,7 +18,7 @@ public class SongEditorManager : MonoBehaviour
         opponentChart = new List<Vector2>();
         playerChart = new List<Vector2>();
         currentSnapIndex = 3;
-        UpdateSongPosText();
+        UpdateSongPosText(null);
         //GetComponent<OpenFile>().OpenDataFile();
     }
 
@@ -27,6 +27,7 @@ public class SongEditorManager : MonoBehaviour
         switch (chartType)
         {
             case CHARTTYPE.OPPONENT:
+                Debug.Log("Adding Note: " + noteData);
                 opponentChart.Add(noteData);
                 break;
             case CHARTTYPE.PLAYER:
@@ -106,7 +107,7 @@ public class SongEditorManager : MonoBehaviour
             int notePosition = (int)chartCopy[i].x;
             double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetRows() * ((double)chartCopy[i].y / 100f));
 
-            Note newNote = new Note(notePosition, timeStamp);
+            Note newNote = new Note(notePosition, -timeStamp);
 
             chartData.Add(newNote);
         }
@@ -140,15 +141,29 @@ public class SongEditorManager : MonoBehaviour
     }
 
     public float GetPositionSnap() => beatSnaps[currentSnapIndex];
-    public void UpdateSongPosText()
+    public void UpdateSongPosText(RectTransform updatedTransform)
     {
-        float gridYPos = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().localPosition.y;
-        float gridHeight = GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>().sizeDelta.y;
+        if(updatedTransform == null)
+        {
+            double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
 
-        double seconds = Mathf.Round((float)(LevelManager.GetFullSongDuration() * (gridYPos / gridHeight)) * 100f) / 100f;
+            songPos.text = "0 sec / " + totalTime + " sec";
+        }
+        else
+        {
+            EditorGridEvents[] allGrids = GetComponentsInChildren<EditorGridEvents>();
 
-        double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
+            foreach(var grid in allGrids)
+                grid.GetComponent<RectTransform>().localPosition = updatedTransform.localPosition;
 
-        songPos.text = seconds + " sec / " + totalTime + " sec";
+            float gridYPos = updatedTransform.localPosition.y;
+            float gridHeight = updatedTransform.sizeDelta.y;
+
+            double seconds = Mathf.Round((float)(LevelManager.GetFullSongDuration() * (gridYPos / gridHeight)) * 100f) / 100f;
+
+            double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
+
+            songPos.text = seconds + " sec / " + totalTime + " sec";
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class LevelManager : MonoBehaviour
     public string CurrentSong;
     private AudioSource currentSongAudioSource;
 
-    [SerializeField] private LaneController[] lanes;
+    [SerializeField] private LaneController[] opponentLanes;
+    [SerializeField] private LaneController[] playerLanes;
 
     public float songDelaySeconds;
     public float marginOfError = 0.1f;
@@ -27,6 +29,8 @@ public class LevelManager : MonoBehaviour
     public float inputDelayMilliseconds;
 
     private float defaultNoteTime = 1.47f;
+
+    private SongData currentSongData;
 
     private void Awake()
     {
@@ -58,13 +62,21 @@ public class LevelManager : MonoBehaviour
     private void SongSetup()
     {
         currentSongAudioSource = FindObjectOfType<AudioManager>().GetSoundAudioSource(CurrentSong+"Inst");
-        ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
+        string directory = ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
+        GetFileData(directory);
         Invoke(nameof(StartSong), songDelaySeconds);
+    }
+
+    private void GetFileData(string directory)
+    {
+        string rawData = File.ReadAllText(directory);
+        currentSongData = JsonUtility.FromJson<SongData>(rawData);
     }
 
     private void StartSong()
     {
-        ReadSongData.AddNotesToLanes(ref lanes);
+        ReadSongData.AddNotesToLanes(currentSongData.opponentChart, ref opponentLanes);
+        ReadSongData.AddNotesToLanes(currentSongData.playerChart, ref playerLanes);
 
         FindObjectOfType<AudioManager>().Play(CurrentSong+"Inst", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
         FindObjectOfType<AudioManager>().Play(CurrentSong+"Voices", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
@@ -95,5 +107,6 @@ public class LevelManager : MonoBehaviour
         currentIndicator.UpdateIndicator(accuracy);
     }
 
-    public LaneController GetLaneAt(int index) => lanes[index];
+    public Note[] GetOpponentChartData() => currentSongData.opponentChart;
+    public Note[] GetPlayerChartData() => currentSongData.playerChart;
 }

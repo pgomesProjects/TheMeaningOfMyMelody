@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,12 +9,15 @@ public class LaneController : MonoBehaviour
 {
     private PlayerControls playerControls;
 
+    [SerializeField] private CHARTTYPE chartType;
     [SerializeField] private NOTETYPE noteDirection;
     [SerializeField] private GameObject notePrefab;
     private List<NoteController> notes;
     private List<double> timeStamps;
     private int spawnIndex, inputIndex;
     private bool notePressed = false;
+
+    private List<OpponentButtonController> opponentButtons;
 
     private void Awake()
     {
@@ -25,6 +29,12 @@ public class LaneController : MonoBehaviour
     {
         notes = new List<NoteController>();
         timeStamps = new List<double>();
+        if (chartType == CHARTTYPE.OPPONENT)
+        {
+            opponentButtons = new List<OpponentButtonController>();
+            opponentButtons.AddRange(FindObjectsOfType<OpponentButtonController>());
+            opponentButtons = opponentButtons.OrderBy(button => button.buttonType).ToList();
+        }
     }
 
     private void OnEnable()
@@ -113,25 +123,38 @@ public class LaneController : MonoBehaviour
             double marginOfError = LevelManager.Instance.marginOfError;
             double audioTime = LevelManager.GetSongTime() - (LevelManager.Instance.inputDelayMilliseconds / 1000.0);
 
-            if (notePressed)
+            switch (chartType)
             {
-                double hitDelay = Math.Abs(audioTime - timeStamp);
+                case CHARTTYPE.OPPONENT:
+                    if (audioTime >= timeStamp)
+                    {
+                        opponentButtons[(int)noteDirection].HitButton();
+                        Destroy(notes[inputIndex].gameObject);
+                        inputIndex++;
+                    }
+                    break;
+                case CHARTTYPE.PLAYER:
+                    if (notePressed)
+                    {
+                        double hitDelay = Math.Abs(audioTime - timeStamp);
 
-                if (hitDelay < marginOfError)
-                {
-                    Hit(hitDelay);
-                    Destroy(notes[inputIndex].gameObject);
-                    inputIndex++;
-                }
-                else
-                {
-                    //print($"Hit inaccurate on {inputIndex} note with {Math.Abs(audioTime - timeStamp)} delay");
-                }
-            }
-            if (timeStamp + marginOfError <= audioTime)
-            {
-                Miss();
-                inputIndex++;
+                        if (hitDelay < marginOfError)
+                        {
+                            Hit(hitDelay);
+                            Destroy(notes[inputIndex].gameObject);
+                            inputIndex++;
+                        }
+                        else
+                        {
+                            //print($"Hit inaccurate on {inputIndex} note with {Math.Abs(audioTime - timeStamp)} delay");
+                        }
+                    }
+                    if (timeStamp + marginOfError <= audioTime)
+                    {
+                        Miss();
+                        inputIndex++;
+                    }
+                    break;
             }
         }
     }
