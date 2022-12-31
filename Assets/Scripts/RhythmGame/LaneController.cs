@@ -17,6 +17,7 @@ public class LaneController : MonoBehaviour
     private int spawnIndex, inputIndex;
     private bool notePressed = false;
 
+    private TransparencyController transparencyController;
     private List<OpponentButtonController> opponentButtons;
 
     private void Awake()
@@ -35,6 +36,8 @@ public class LaneController : MonoBehaviour
             opponentButtons.AddRange(FindObjectsOfType<OpponentButtonController>());
             opponentButtons = opponentButtons.OrderBy(button => button.buttonType).ToList();
         }
+
+        transparencyController = transform.parent.parent.GetComponent<TransparencyController>();
     }
 
     private void OnEnable()
@@ -109,6 +112,14 @@ public class LaneController : MonoBehaviour
             {
                 //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
                 var note = Instantiate(notePrefab, transform);
+                //If the grandparent has a transparency controller, control the transparency of the notes
+                if(transparencyController != null)
+                {
+                    Color adjustAlpha = note.GetComponentInChildren<SpriteRenderer>().color;
+                    adjustAlpha.a = transparencyController.GetAlpha();
+                    note.GetComponentInChildren<SpriteRenderer>().color = adjustAlpha;
+                    Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
+                }
                 NoteController currentNote = note.GetComponent<NoteController>();
                 currentNote.SetNoteDirection(noteDirection);
                 currentNote.SetAssignedTime((float)timeStamps[spawnIndex]);

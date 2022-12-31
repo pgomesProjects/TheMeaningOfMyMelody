@@ -3169,6 +3169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 961771510}
+  - component: {fileID: 961771511}
   m_Layer: 0
   m_Name: OpponentBoard
   m_TagString: Untagged
@@ -3193,6 +3194,18 @@ Transform:
   m_Father: {fileID: 21988490}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961771511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961771509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c003098add0f0d4a9b07618c935eee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &995884568
 GameObject:
   m_ObjectHideFlags: 0
@@ -4769,6 +4782,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1388494748}
+  - component: {fileID: 1388494749}
   m_Layer: 0
   m_Name: PlayerBoard
   m_TagString: Untagged
@@ -4793,6 +4807,18 @@ Transform:
   m_Father: {fileID: 21988490}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1388494749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388494747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c003098add0f0d4a9b07618c935eee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1406110816
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -23,15 +23,20 @@ public class ButtonController : MonoBehaviour
 
     protected void ButtonPressAction()
     {
-        arrowSpriteRenderer.color = pressColor;
+        SetColor(pressColor);
         StartCharacterDirection();
     }
 
     protected void ButtonLiftAction()
     {
-        arrowSpriteRenderer.color = defaultColor;
+        SetColor(defaultColor);
         arrowSpriteRenderer.gameObject.transform.localScale = Vector3.one;
         StopCharacterDirection();
+    }
+
+    private void SetColor(Color newColor)
+    {
+        arrowSpriteRenderer.color = new Color(newColor.r, newColor.g, newColor.b, arrowSpriteRenderer.color.a);
     }
 
     private void StartCharacterDirection()
