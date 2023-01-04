@@ -27,7 +27,7 @@ public class SongEditorManager : MonoBehaviour
         switch (chartType)
         {
             case CHARTTYPE.OPPONENT:
-                Debug.Log("Adding Note: " + noteData);
+                //Debug.Log("Adding Note: " + noteData);
                 opponentChart.Add(noteData);
                 break;
             case CHARTTYPE.PLAYER:
@@ -65,7 +65,7 @@ public class SongEditorManager : MonoBehaviour
 
         foreach (var chart in chartCopy)
         {
-            //Debug.Log(chart + " vs. " + noteData);
+            Debug.Log(chart.ToString("F0") + " vs. " + noteData.ToString("F0"));
             if(chart == noteData)
                 return true;
         }
@@ -147,7 +147,7 @@ public class SongEditorManager : MonoBehaviour
         {
             double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
 
-            songPos.text = "0 sec / " + totalTime + " sec";
+            songPos.text = "0.00 sec / " + totalTime.ToString("F2") + " sec";
         }
         else
         {
@@ -163,7 +163,10 @@ public class SongEditorManager : MonoBehaviour
 
             double totalTime = Mathf.Round((float)LevelManager.GetFullSongDuration() * 100f) / 100f;
 
-            songPos.text = seconds + " sec / " + totalTime + " sec";
+            if (seconds > totalTime)
+                seconds = totalTime;
+
+            songPos.text = seconds.ToString("F2") + " sec / " + totalTime.ToString("F2") + " sec";
         }
     }
 }

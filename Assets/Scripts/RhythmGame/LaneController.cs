@@ -106,66 +106,69 @@ public class LaneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (spawnIndex < timeStamps.Count)
+        if (LevelManager.IsSongPlaying())
         {
-            if (LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.GetScrollSpeedTime())
+            if (spawnIndex < timeStamps.Count)
             {
-                //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
-                var note = Instantiate(notePrefab, transform);
-                //If the grandparent has a transparency controller, control the transparency of the notes
-                if(transparencyController != null)
+                if (LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.GetScrollSpeedTime())
                 {
-                    Color adjustAlpha = note.GetComponentInChildren<SpriteRenderer>().color;
-                    adjustAlpha.a = transparencyController.GetAlpha();
-                    note.GetComponentInChildren<SpriteRenderer>().color = adjustAlpha;
-                    Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
-                }
-                NoteController currentNote = note.GetComponent<NoteController>();
-                currentNote.SetNoteDirection(noteDirection);
-                currentNote.SetAssignedTime((float)timeStamps[spawnIndex]);
-                notes.Add(currentNote);
-                spawnIndex++;
-            }
-        }
-
-        if (inputIndex < timeStamps.Count)
-        {
-            double timeStamp = timeStamps[inputIndex];
-            double marginOfError = LevelManager.Instance.marginOfError;
-            double audioTime = LevelManager.GetSongTime() - (LevelManager.Instance.inputDelayMilliseconds / 1000.0);
-
-            switch (chartType)
-            {
-                case CHARTTYPE.OPPONENT:
-                    if (audioTime >= timeStamp)
+                    //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
+                    var note = Instantiate(notePrefab, transform);
+                    //If the grandparent has a transparency controller, control the transparency of the notes
+                    if (transparencyController != null)
                     {
-                        opponentButtons[(int)noteDirection].HitButton();
-                        Destroy(notes[inputIndex].gameObject);
-                        inputIndex++;
+                        Color adjustAlpha = note.GetComponentInChildren<SpriteRenderer>().color;
+                        adjustAlpha.a = transparencyController.GetAlpha();
+                        note.GetComponentInChildren<SpriteRenderer>().color = adjustAlpha;
+                        Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
                     }
-                    break;
-                case CHARTTYPE.PLAYER:
-                    if (notePressed)
-                    {
-                        double hitDelay = Math.Abs(audioTime - timeStamp);
+                    NoteController currentNote = note.GetComponent<NoteController>();
+                    currentNote.SetNoteDirection(noteDirection);
+                    currentNote.SetAssignedTime((float)timeStamps[spawnIndex]);
+                    notes.Add(currentNote);
+                    spawnIndex++;
+                }
+            }
 
-                        if (hitDelay < marginOfError)
+            if (inputIndex < timeStamps.Count)
+            {
+                double timeStamp = timeStamps[inputIndex];
+                double marginOfError = LevelManager.Instance.marginOfError;
+                double audioTime = LevelManager.GetSongTime() - (LevelManager.Instance.inputDelayMilliseconds / 1000.0);
+
+                switch (chartType)
+                {
+                    case CHARTTYPE.OPPONENT:
+                        if (audioTime >= timeStamp)
                         {
-                            Hit(hitDelay);
+                            opponentButtons[(int)noteDirection].HitButton();
                             Destroy(notes[inputIndex].gameObject);
                             inputIndex++;
                         }
-                        else
+                        break;
+                    case CHARTTYPE.PLAYER:
+                        if (notePressed)
                         {
-                            //print($"Hit inaccurate on {inputIndex} note with {Math.Abs(audioTime - timeStamp)} delay");
+                            double hitDelay = Math.Abs(audioTime - timeStamp);
+
+                            if (hitDelay < marginOfError)
+                            {
+                                Hit(hitDelay);
+                                Destroy(notes[inputIndex].gameObject);
+                                inputIndex++;
+                            }
+                            else
+                            {
+                                //print($"Hit inaccurate on {inputIndex} note with {Math.Abs(audioTime - timeStamp)} delay");
+                            }
                         }
-                    }
-                    if (timeStamp + marginOfError <= audioTime)
-                    {
-                        Miss();
-                        inputIndex++;
-                    }
-                    break;
+                        if (timeStamp + marginOfError <= audioTime)
+                        {
+                            Miss();
+                            inputIndex++;
+                        }
+                        break;
+                }
             }
         }
     }
@@ -215,6 +218,6 @@ public class LaneController : MonoBehaviour
 
     private void Miss()
     {
-        print($"Missed {inputIndex} note");
+        //print($"Missed {inputIndex} note");
     }
 }

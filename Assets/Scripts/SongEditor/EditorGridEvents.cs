@@ -93,6 +93,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
         newArrow.transform.parent = editorArrowParent;
 
         //Adjust position
+        chartNoteData.y = Mathf.RoundToInt(chartNoteData.y);
         newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
         newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
         newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
@@ -101,7 +102,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
 
-        newArrow.name = "Note";
+        newArrow.name = "Note " + chartNoteData.ToString("F0");
 
         _songEditorManager.AddNoteToChart(chartType, chartNoteData);
         chartObjects.Add(newArrow);
@@ -116,6 +117,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
         newArrow.transform.parent = editorArrowParent;
 
         //Adjust position
+        chartNoteData.y = Mathf.RoundToInt(chartNoteData.y);
         newArrow.AddComponent<RectTransform>().anchorMin = Vector2.up;
         newArrow.GetComponent<RectTransform>().anchorMax = Vector2.up;
         newArrow.GetComponent<RectTransform>().pivot = Vector2.up;
@@ -124,7 +126,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         newArrow.AddComponent<Image>().sprite = editorArrows[arrowIndex];
 
-        newArrow.name = "Note";
+        newArrow.name = "Note " + chartNoteData.ToString("F0");
 
         _songEditorManager.AddNoteToChart(chartType, chartNoteData);
         chartObjects.Add(newArrow);

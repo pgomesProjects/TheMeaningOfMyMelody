@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -44,13 +45,15 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Opening Song Editor...");
         songEditor.SetActive(true);
         inSongEditor = true;
+        FindObjectOfType<AudioManager>().PauseAllSounds();
     }
 
     public void CloseSongEditor(InputAction.CallbackContext ctx)
     {
         Debug.Log("Closing Song Editor...");
-        songEditor.SetActive(false);
         inSongEditor = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        songEditor.SetActive(false);
     }
 
     public void ChangeBeatSnap(InputAction.CallbackContext ctx)

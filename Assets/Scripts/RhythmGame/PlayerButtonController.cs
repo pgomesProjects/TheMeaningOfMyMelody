@@ -73,13 +73,19 @@ public class PlayerButtonController : ButtonController
 
     private void OnButtonPress(InputAction.CallbackContext ctx)
     {
-        arrowSpriteRenderer.gameObject.transform.localScale = new Vector3(pressedScale, pressedScale, pressedScale);
-        ButtonPressAction();
+        if (LevelManager.IsSongPlaying())
+        {
+            arrowSpriteRenderer.gameObject.transform.localScale = new Vector3(pressedScale, pressedScale, pressedScale);
+            ButtonPressAction();
+        }
     }
 
     private void OnButtonLift(InputAction.CallbackContext ctx)
     {
-        arrowSpriteRenderer.gameObject.transform.localScale = Vector3.one;
-        ButtonLiftAction();
+        if (LevelManager.IsSongPlaying())
+        {
+            arrowSpriteRenderer.gameObject.transform.localScale = Vector3.one;
+            ButtonLiftAction();
+        }
     }
 }

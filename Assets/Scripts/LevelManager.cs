@@ -107,6 +107,12 @@ public class LevelManager : MonoBehaviour
         currentIndicator.UpdateIndicator(accuracy);
     }
 
+    public static bool IsSongPlaying()
+    {
+        if (Instance != null && Instance.currentSongAudioSource != null && Instance.currentSongAudioSource.clip != null)
+            return Instance.currentSongAudioSource.isPlaying;
+        return false;
+    }
     public Note[] GetOpponentChartData() => currentSongData.opponentChart;
     public Note[] GetPlayerChartData() => currentSongData.playerChart;
 }
