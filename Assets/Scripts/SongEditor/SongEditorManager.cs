@@ -5,7 +5,9 @@ using TMPro;
 
 public class SongEditorManager : MonoBehaviour
 {
+    [SerializeField] private RectTransform strumTransform;
     [SerializeField] private TextMeshProUGUI songPos;
+    [SerializeField] private TextMeshProUGUI sectionPos;
     [SerializeField] private TextMeshProUGUI beatSnap;
     private List<Vector2> opponentChart;
     private List<Vector2> playerChart;
@@ -13,12 +15,26 @@ public class SongEditorManager : MonoBehaviour
     private float[] beatSnaps = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f, 6f, 12f};
     private int currentSnapIndex = 3;
 
+    private int currentSection = 1;
+    private int currentStep = 0;
+
+    private Vector3 strumDefaultTransform;
+    private float strumMaxPosition = 31.7f;
+    private float strumSnapValue;
+
+    private void Start()
+    {
+        strumDefaultTransform = strumTransform.anchoredPosition;
+        strumSnapValue = (strumDefaultTransform.y - strumMaxPosition) / 16f;
+    }
+
     private void OnEnable()
     {
         opponentChart = new List<Vector2>();
         playerChart = new List<Vector2>();
         currentSnapIndex = 3;
         UpdateSongPosText(null);
+        UpdateSection();
         //GetComponent<OpenFile>().OpenDataFile();
     }
 
@@ -140,6 +156,94 @@ public class SongEditorManager : MonoBehaviour
         beatSnap.text = (16f * beatSnaps[currentSnapIndex]).ToString() + "th";
     }
 
+    public void ChangeSection(int increment)
+    {
+        switch (increment)
+        {
+            case -1:
+                if(currentSection > 1)
+                {
+                    strumTransform.anchoredPosition = strumDefaultTransform;
+                    currentSection += increment;
+                }
+                break;
+            case 1:
+                if (currentSection < GetMaxSections())
+                {
+                    strumTransform.anchoredPosition = strumDefaultTransform;
+                    currentSection += increment;
+                }
+                break;
+        }
+
+        UpdateAllGrids(new Vector3(0, 1600 * (currentSection - 1), 0));
+        UpdateSection();
+    }
+
+    private int CheckForCurrentSection()
+    {
+        EditorGridEvents grid = GetComponentInChildren<EditorGridEvents>();
+        if (grid != null)
+        {
+            return (int)(grid.GetComponent<RectTransform>().localPosition.y / 1600f) + 1;
+        }
+
+        return 0;
+    }
+
+    private int GetMaxSections()
+    {
+        EditorGridEvents grid = GetComponentInChildren<EditorGridEvents>();
+        if (grid != null)
+        {
+            return (int)(grid.GetComponent<RectTransform>().sizeDelta.y / 1600f);
+        }
+
+        return 0;
+    }
+
+    private void UpdateSection()
+    {
+        sectionPos.text = "Section: " + currentSection;
+    }
+
+    public void SnapStrumPosition(int increment)
+    {
+        switch (increment)
+        {
+            case -1:
+                if (currentStep > 0)
+                {
+                    currentStep += increment;
+                }
+                else
+                {
+                    if (currentSection > 1)
+                    {
+                        currentStep = 15;
+                        ChangeSection(-1);
+                    }
+                }
+                break;
+            case 1:
+                if (currentStep < 15)
+                {
+                    currentStep += increment;
+                }
+                else
+                {
+                    if (currentSection < GetMaxSections())
+                    {
+                        currentStep = 0;
+                        ChangeSection(1);
+                    }
+                }
+                break;
+        }
+
+        strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * currentStep), strumDefaultTransform.z);
+    }
+
     public float GetPositionSnap() => beatSnaps[currentSnapIndex];
     public void UpdateSongPosText(RectTransform updatedTransform)
     {
@@ -151,10 +255,9 @@ public class SongEditorManager : MonoBehaviour
         }
         else
         {
-            EditorGridEvents[] allGrids = GetComponentsInChildren<EditorGridEvents>();
-
-            foreach(var grid in allGrids)
-                grid.GetComponent<RectTransform>().localPosition = updatedTransform.localPosition;
+            UpdateAllGrids(updatedTransform.localPosition);
+            currentSection = CheckForCurrentSection();
+            UpdateSection();
 
             float gridYPos = updatedTransform.localPosition.y;
             float gridHeight = updatedTransform.sizeDelta.y;
@@ -168,5 +271,13 @@ public class SongEditorManager : MonoBehaviour
 
             songPos.text = seconds.ToString("F2") + " sec / " + totalTime.ToString("F2") + " sec";
         }
+    }
+
+    private void UpdateAllGrids(Vector3 newPos)
+    {
+        EditorGridEvents[] allGrids = GetComponentsInChildren<EditorGridEvents>();
+
+        foreach (var grid in allGrids)
+            grid.GetComponent<RectTransform>().localPosition = newPos;
     }
 }

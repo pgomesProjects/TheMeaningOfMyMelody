@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject songEditor;
     private SongEditorManager _songEditorManager;
     [SerializeField] private InputAction changeBeatSnap;
+    [SerializeField] private InputAction changeSection;
+    [SerializeField] private InputAction changeStrumSnap;
     private PlayerControls playerControls;
     private bool inSongEditor;
 
@@ -28,6 +30,10 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.CloseSongEditor.performed += CloseSongEditor;
         changeBeatSnap.Enable();
         changeBeatSnap.performed += ChangeBeatSnap;
+        changeSection.Enable();
+        changeSection.performed += ChangeSection;
+        changeStrumSnap.Enable();
+        changeStrumSnap.performed += ChangeStepSnap;
     }
 
     private void OnDisable()
@@ -38,6 +44,10 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.CloseSongEditor.performed -= CloseSongEditor;
         changeBeatSnap.Disable();
         changeBeatSnap.performed -= ChangeBeatSnap;
+        changeSection.Disable();
+        changeSection.performed -= ChangeSection;
+        changeStrumSnap.Disable();
+        changeStrumSnap.performed -= ChangeStepSnap;
     }
 
     public void OpenSongEditor(InputAction.CallbackContext ctx)
@@ -68,6 +78,40 @@ public class PlayerController : MonoBehaviour
                     break;
                 case 1f:
                     _songEditorManager.IncreaseBeatSnap();
+                    break;
+            }
+        }
+    }
+
+    public void ChangeSection(InputAction.CallbackContext ctx)
+    {
+        if (inSongEditor)
+        {
+            float inputValue = ctx.ReadValue<float>();
+            switch (inputValue)
+            {
+                case -1f:
+                    _songEditorManager.ChangeSection((int)inputValue);
+                    break;
+                case 1f:
+                    _songEditorManager.ChangeSection((int)inputValue);
+                    break;
+            }
+        }
+    }
+
+    public void ChangeStepSnap(InputAction.CallbackContext ctx)
+    {
+        if (inSongEditor)
+        {
+            float inputValue = ctx.ReadValue<float>();
+            switch (inputValue)
+            {
+                case -1f:
+                    _songEditorManager.SnapStrumPosition((int)inputValue);
+                    break;
+                case 1f:
+                    _songEditorManager.SnapStrumPosition((int)inputValue);
                     break;
             }
         }
