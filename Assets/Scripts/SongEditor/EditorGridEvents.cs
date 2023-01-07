@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public enum CHARTTYPE { OPPONENT, PLAYER };
+public enum CHARTTYPE { OPPONENT, PLAYER, EVENTS };
 
 public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {

@@ -15,8 +15,8 @@ public class SongEditorManager : MonoBehaviour
     private float[] beatSnaps = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f, 6f, 12f};
     private int currentSnapIndex = 3;
 
-    private int currentSection = 1;
-    private int currentStep = 0;
+    private int currentSection = 0;
+    private double currentStep = 0;
 
     private Vector3 strumDefaultTransform;
     private float strumMaxPosition = 31.7f;
@@ -241,7 +241,8 @@ public class SongEditorManager : MonoBehaviour
                 break;
         }
 
-        strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * currentStep), strumDefaultTransform.z);
+        strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * (float)currentStep), strumDefaultTransform.z);
+        UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
     }
 
     public float GetPositionSnap() => beatSnaps[currentSnapIndex];
@@ -259,7 +260,7 @@ public class SongEditorManager : MonoBehaviour
             currentSection = CheckForCurrentSection();
             UpdateSection();
 
-            float gridYPos = updatedTransform.localPosition.y;
+            float gridYPos = updatedTransform.localPosition.y + (100f * (float)currentStep);
             float gridHeight = updatedTransform.sizeDelta.y;
 
             double seconds = Mathf.Round((float)(LevelManager.GetFullSongDuration() * (gridYPos / gridHeight)) * 100f) / 100f;
