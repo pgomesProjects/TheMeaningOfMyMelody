@@ -5,6 +5,8 @@ using TMPro;
 
 public class SongEditorManager : MonoBehaviour
 {
+    private SongData songData;
+
     [SerializeField] private RectTransform strumTransform;
     [SerializeField] private TextMeshProUGUI songPos;
     [SerializeField] private TextMeshProUGUI sectionPos;
@@ -15,21 +17,25 @@ public class SongEditorManager : MonoBehaviour
     private float[] beatSnaps = {0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f, 6f, 12f};
     private int currentSnapIndex = 3;
 
-    private int currentSection = 0;
+    private int currentSection = 1;
     private double currentStep = 0;
 
     private Vector3 strumDefaultTransform;
     private float strumMaxPosition = 31.7f;
     private float strumSnapValue;
 
+    private float beatChartValue;
+
     private void Start()
     {
         strumDefaultTransform = strumTransform.anchoredPosition;
         strumSnapValue = (strumDefaultTransform.y - strumMaxPosition) / 16f;
+        beatChartValue = (strumDefaultTransform.y - strumMaxPosition) / 4f;
     }
 
     private void OnEnable()
     {
+        songData = new SongData();
         opponentChart = new List<Vector2>();
         playerChart = new List<Vector2>();
         currentSnapIndex = 3;
@@ -102,7 +108,7 @@ public class SongEditorManager : MonoBehaviour
         return -1;
     }
 
-    public List<Note> GetChartData(CHARTTYPE chartType)
+    private List<Note> GetChartData(CHARTTYPE chartType)
     {
         List<Vector2> chartCopy = new List<Vector2>();
 
@@ -207,6 +213,31 @@ public class SongEditorManager : MonoBehaviour
         sectionPos.text = "Section: " + currentSection;
     }
 
+    public void ChangeStrumPosition(float increment)
+    {
+        Vector3 currentPosition = strumTransform.anchoredPosition;
+        currentPosition.y += increment;
+
+        strumTransform.anchoredPosition = currentPosition;
+        currentStep = UpdateCurrentStep();
+
+        if(currentStep < 0 && currentSection > 1)
+        {
+            Debug.Log("Go To Previous Section");
+            currentStep = 15;
+            ChangeSection(-1);
+            strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * (float)currentStep), strumDefaultTransform.z);
+        }
+        else if(currentStep >= 15 && currentSection < GetMaxSections())
+        {
+            Debug.Log("Go To Next Section");
+            currentStep = 0;
+            ChangeSection(1);
+            strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * (float)currentStep), strumDefaultTransform.z);
+        }
+        UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
+    }
+
     public void SnapStrumPosition(int increment)
     {
         switch (increment)
@@ -245,6 +276,14 @@ public class SongEditorManager : MonoBehaviour
         UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
     }
 
+    private double UpdateCurrentStep()
+    {
+        float currentYPos = strumDefaultTransform.y - strumTransform.anchoredPosition.y;
+        Debug.Log("Step: " + (double)currentYPos / strumSnapValue);
+        return (double)currentYPos / strumSnapValue;
+    }
+
+    public float GetBeatChartValue() => beatChartValue;
     public float GetPositionSnap() => beatSnaps[currentSnapIndex];
     public void UpdateSongPosText(RectTransform updatedTransform)
     {
@@ -281,4 +320,38 @@ public class SongEditorManager : MonoBehaviour
         foreach (var grid in allGrids)
             grid.GetComponent<RectTransform>().localPosition = newPos;
     }
+
+    #region SAVEDATA
+    public void SaveChartBPM(string chartBPM)
+    {
+        songData.chartBPM = int.Parse(chartBPM);
+    }
+
+    public void SaveOffset(string offset)
+    {
+        songData.offset = int.Parse(offset);
+    }
+
+    public void SaveScrollSpeed(string scrollSpeed)
+    {
+        songData.scrollSpeed = double.Parse(scrollSpeed);
+    }
+
+    public void SaveInstVolume(string instVolume)
+    {
+        songData.instVolume = double.Parse(instVolume);
+    }
+
+    public void SaveVocalsVolume(string vocalsVolume)
+    {
+        songData.vocalsVolume = double.Parse(vocalsVolume);
+    }
+    
+    public SongData SaveData()
+    {
+        songData.opponentChart = GetChartData(CHARTTYPE.OPPONENT).ToArray();
+        songData.playerChart = GetChartData(CHARTTYPE.PLAYER).ToArray();
+        return songData;
+    }
+    #endregion
 }

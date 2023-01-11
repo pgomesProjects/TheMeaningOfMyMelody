@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
 
     private void OnEnable()
     {
-        rows = Mathf.CeilToInt((float)(LevelManager.Instance.beatTempo * (LevelManager.GetFullSongDuration() / 60.0) * 4));
+        rows = Mathf.CeilToInt((float)(LevelManager.Instance.GetSongData().chartBPM * (LevelManager.GetFullSongDuration() / 60.0) * 4));
         columns = 4;
         GenerateGridSize();
     }

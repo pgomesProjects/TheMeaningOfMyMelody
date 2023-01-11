@@ -5,6 +5,9 @@ using TMPro;
 
 public class InputFieldChecker : MonoBehaviour
 {
+    public enum INPUTTYPE { ChartBPM, Offset, ScrollSpeed, InstrumentalVolume, VocalsVolume }
+
+    [SerializeField] private INPUTTYPE inputType;
     [SerializeField] private double defaultValue = 0;
     [SerializeField] private double minimumValue = 0;
     [SerializeField] private double maximumValue = 1;
@@ -18,7 +21,38 @@ public class InputFieldChecker : MonoBehaviour
     {
         inputField = GetComponent<TMP_InputField>();
         inputField.text = defaultValue.ToString();
+        if (LevelManager.Instance != null)
+        {
+            SetInputFields();
+        }
         inputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+    }
+
+    private void SetInputFields()
+    {
+        switch (inputType)
+        {
+            case INPUTTYPE.ChartBPM:
+                inputField.text = LevelManager.Instance.GetSongData().chartBPM.ToString();
+                FindObjectOfType<SongEditorManager>().SaveChartBPM(inputField.text);
+                break;
+            case INPUTTYPE.Offset:
+                inputField.text = LevelManager.Instance.GetSongData().offset.ToString();
+                FindObjectOfType<SongEditorManager>().SaveOffset(inputField.text);
+                break;
+            case INPUTTYPE.ScrollSpeed:
+                inputField.text = LevelManager.Instance.GetSongData().scrollSpeed.ToString();
+                FindObjectOfType<SongEditorManager>().SaveScrollSpeed(inputField.text);
+                break;
+            case INPUTTYPE.InstrumentalVolume:
+                inputField.text = LevelManager.Instance.GetSongData().instVolume.ToString();
+                FindObjectOfType<SongEditorManager>().SaveInstVolume(inputField.text);
+                break;
+            case INPUTTYPE.VocalsVolume:
+                inputField.text = LevelManager.Instance.GetSongData().vocalsVolume.ToString();
+                FindObjectOfType<SongEditorManager>().SaveVocalsVolume(inputField.text);
+                break;
+        }
     }
 
     // Update is called once per frame

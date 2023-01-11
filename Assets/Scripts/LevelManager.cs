@@ -10,9 +10,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Transform accuracyIndicatorParent;
     [SerializeField] private AccuracyIndicatorController accuracyIndicator;
 
-    public float beatTempo = 120f;
-    public float scrollSpeed = 1f;
-
     public static LevelManager Instance;
 
     public string CurrentSong;
@@ -46,7 +43,7 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateBoardSettings()
     {
-        if(GameSettings.downScrollMultiplier == -1)
+        if (GameSettings.downScrollMultiplier == -1)
         {
             //Flip the position of the arrows and the lanes
             Vector3 newArrowPos = arrowHolder.position;
@@ -61,7 +58,7 @@ public class LevelManager : MonoBehaviour
 
     private void SongSetup()
     {
-        currentSongAudioSource = FindObjectOfType<AudioManager>().GetSoundAudioSource(CurrentSong+"Inst");
+        currentSongAudioSource = FindObjectOfType<AudioManager>().GetSoundAudioSource(CurrentSong + "Inst");
         string directory = ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
         GetFileData(directory);
         Invoke(nameof(StartSong), songDelaySeconds);
@@ -78,13 +75,13 @@ public class LevelManager : MonoBehaviour
         ReadSongData.AddNotesToLanes(currentSongData.opponentChart, ref opponentLanes);
         ReadSongData.AddNotesToLanes(currentSongData.playerChart, ref playerLanes);
 
-        FindObjectOfType<AudioManager>().Play(CurrentSong+"Inst", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
-        FindObjectOfType<AudioManager>().Play(CurrentSong+"Voices", PlayerPrefs.GetFloat("BGMVolume", 0.5f));
+        FindObjectOfType<AudioManager>().Play(CurrentSong + "Inst", PlayerPrefs.GetFloat("BGMVolume", 0.5f) * (float)currentSongData.instVolume);
+        FindObjectOfType<AudioManager>().Play(CurrentSong + "Voices", PlayerPrefs.GetFloat("BGMVolume", 0.5f) * (float)currentSongData.vocalsVolume);
     }
 
     public double GetScrollSpeedTime()
     {
-        return defaultNoteTime / scrollSpeed;
+        return defaultNoteTime / currentSongData.scrollSpeed;
     }
 
     public static double GetSongTime()
@@ -94,7 +91,7 @@ public class LevelManager : MonoBehaviour
 
     public static double GetFullSongDuration()
     {
-        if(Instance != null && Instance.currentSongAudioSource != null && Instance.currentSongAudioSource.clip != null)
+        if (Instance != null && Instance.currentSongAudioSource != null && Instance.currentSongAudioSource.clip != null)
             return (double)Instance.currentSongAudioSource.clip.length;
 
         return 0.0;
@@ -113,6 +110,8 @@ public class LevelManager : MonoBehaviour
             return Instance.currentSongAudioSource.isPlaying;
         return false;
     }
+    public SongData GetSongData() => currentSongData;
+
     public Note[] GetOpponentChartData() => currentSongData.opponentChart;
     public Note[] GetPlayerChartData() => currentSongData.playerChart;
 }

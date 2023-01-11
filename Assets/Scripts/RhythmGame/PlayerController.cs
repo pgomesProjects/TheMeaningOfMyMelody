@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject songEditor;
     private SongEditorManager _songEditorManager;
+    [SerializeField] private InputAction scrollChart;
     [SerializeField] private InputAction changeBeatSnap;
     [SerializeField] private InputAction changeSection;
     [SerializeField] private InputAction changeStrumSnap;
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.OpenSongEditor.performed += OpenSongEditor;
         playerControls.Player.CloseSongEditor.Enable();
         playerControls.Player.CloseSongEditor.performed += CloseSongEditor;
+        scrollChart.Enable();
+        scrollChart.performed += OnChartScroll;
         changeBeatSnap.Enable();
         changeBeatSnap.performed += ChangeBeatSnap;
         changeSection.Enable();
@@ -42,6 +45,8 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.OpenSongEditor.performed -= OpenSongEditor;
         playerControls.Player.CloseSongEditor.Disable();
         playerControls.Player.CloseSongEditor.performed -= CloseSongEditor;
+        scrollChart.Disable();
+        scrollChart.performed -= OnChartScroll;
         changeBeatSnap.Disable();
         changeBeatSnap.performed -= ChangeBeatSnap;
         changeSection.Disable();
@@ -64,6 +69,23 @@ public class PlayerController : MonoBehaviour
         inSongEditor = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         songEditor.SetActive(false);
+    }
+
+    public void OnChartScroll(InputAction.CallbackContext ctx)
+    {
+        if (inSongEditor)
+        {
+            float inputValue = ctx.ReadValue<float>();
+            Debug.Log("Scroll Value: " + inputValue);
+            if(inputValue < 0)
+            {
+                _songEditorManager.ChangeStrumPosition(-(_songEditorManager.GetBeatChartValue() / 5f));
+            }
+            else if(inputValue > 0)
+            {
+                _songEditorManager.ChangeStrumPosition(_songEditorManager.GetBeatChartValue() / 5f);
+            }
+        }
     }
 
     public void ChangeBeatSnap(InputAction.CallbackContext ctx)

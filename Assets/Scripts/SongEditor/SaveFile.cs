@@ -9,11 +9,9 @@ public class SaveFile : MonoBehaviour
     public void OnDataSave()
     {
         //Get data from chart in readable form
-        SongData chartData = new SongData();
-        chartData.opponentChart = GetComponent<SongEditorManager>().GetChartData(CHARTTYPE.OPPONENT).ToArray();
-        chartData.playerChart = GetComponent<SongEditorManager>().GetChartData(CHARTTYPE.PLAYER).ToArray();
+        SongData songData = GetComponent<SongEditorManager>().SaveData();
 
-        string data = JsonUtility.ToJson(chartData);
+        string data = JsonUtility.ToJson(songData);
 
         //Open the save file panel
         string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "song_data", "json");
