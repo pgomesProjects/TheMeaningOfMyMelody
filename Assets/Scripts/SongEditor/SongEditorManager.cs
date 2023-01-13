@@ -127,7 +127,7 @@ public class SongEditorManager : MonoBehaviour
         for (int i = 0; i < chartCopy.Count; i++)
         {
             int notePosition = (int)chartCopy[i].x;
-            double timeStamp = (double)(Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInChildren<GridManager>().GetRows() * ((double)chartCopy[i].y / 100f));
+            double timeStamp = (double)(float)LevelManager.GetFullSongDuration() / GetComponentInChildren<GridManager>().GetRows() * ((double)chartCopy[i].y / 100f);
 
             Note newNote = new Note(notePosition, -timeStamp);
 
@@ -171,6 +171,7 @@ public class SongEditorManager : MonoBehaviour
                 {
                     strumTransform.anchoredPosition = strumDefaultTransform;
                     currentSection += increment;
+                    currentStep = 0;
                 }
                 break;
             case 1:
@@ -178,12 +179,14 @@ public class SongEditorManager : MonoBehaviour
                 {
                     strumTransform.anchoredPosition = strumDefaultTransform;
                     currentSection += increment;
+                    currentStep = 0;
                 }
                 break;
         }
 
         UpdateAllGrids(new Vector3(0, 1600 * (currentSection - 1), 0));
         UpdateSection();
+        UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
     }
 
     private int CheckForCurrentSection()
@@ -218,23 +221,34 @@ public class SongEditorManager : MonoBehaviour
         Vector3 currentPosition = strumTransform.anchoredPosition;
         currentPosition.y += increment;
 
-        strumTransform.anchoredPosition = currentPosition;
-        currentStep = UpdateCurrentStep();
+        double nextStep = NextBeatStep(currentPosition);
 
-        if(currentStep < 0 && currentSection > 1)
+        if (nextStep < 0 && currentSection > 1)
         {
             Debug.Log("Go To Previous Section");
             currentStep = 15;
             ChangeSection(-1);
             strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * (float)currentStep), strumDefaultTransform.z);
+            currentStep = UpdateCurrentStep();
+            UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
+            return;
         }
-        else if(currentStep >= 15 && currentSection < GetMaxSections())
+        else if(nextStep >= 16 && currentSection < GetMaxSections())
         {
             Debug.Log("Go To Next Section");
             currentStep = 0;
             ChangeSection(1);
             strumTransform.anchoredPosition = new Vector3(strumDefaultTransform.x, strumDefaultTransform.y - (strumSnapValue * (float)currentStep), strumDefaultTransform.z);
+            currentStep = UpdateCurrentStep();
+            UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
+            return;
         }
+
+        if ((nextStep < 0 && currentSection <= 1) || (nextStep >= 16 && currentSection >= GetMaxSections()))
+            return;
+
+        strumTransform.anchoredPosition = currentPosition;
+        currentStep = UpdateCurrentStep();
         UpdateSongPosText(GetComponentInChildren<EditorGridEvents>().GetComponent<RectTransform>());
     }
 
@@ -279,6 +293,13 @@ public class SongEditorManager : MonoBehaviour
     private double UpdateCurrentStep()
     {
         float currentYPos = strumDefaultTransform.y - strumTransform.anchoredPosition.y;
+        Debug.Log("Step: " + (double)currentYPos / strumSnapValue);
+        return (double)currentYPos / strumSnapValue;
+    }
+
+    private double NextBeatStep(Vector3 nextStepPos)
+    {
+        float currentYPos = strumDefaultTransform.y - nextStepPos.y;
         Debug.Log("Step: " + (double)currentYPos / strumSnapValue);
         return (double)currentYPos / strumSnapValue;
     }
@@ -347,6 +368,18 @@ public class SongEditorManager : MonoBehaviour
         songData.vocalsVolume = double.Parse(vocalsVolume);
     }
     
+    public void ClearNotes()
+    {
+        foreach(var grid in GetComponentsInChildren<EditorGridEvents>())
+        {
+            if(grid.GetChartType() != CHARTTYPE.EVENTS)
+                grid.ClearNoteObjects();
+        }
+
+        playerChart.Clear();
+        opponentChart.Clear();
+    }
+
     public SongData SaveData()
     {
         songData.opponentChart = GetChartData(CHARTTYPE.OPPONENT).ToArray();

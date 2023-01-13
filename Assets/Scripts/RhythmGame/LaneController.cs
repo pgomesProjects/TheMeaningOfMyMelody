@@ -112,7 +112,7 @@ public class LaneController : MonoBehaviour
             {
                 if (LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.GetScrollSpeedTime())
                 {
-                    //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
+                    Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
                     var note = Instantiate(notePrefab, transform);
                     //If the grandparent has a transparency controller, control the transparency of the notes
                     if (transparencyController != null)
@@ -120,7 +120,7 @@ public class LaneController : MonoBehaviour
                         Color adjustAlpha = note.GetComponentInChildren<SpriteRenderer>().color;
                         adjustAlpha.a = transparencyController.GetAlpha();
                         note.GetComponentInChildren<SpriteRenderer>().color = adjustAlpha;
-                        Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
+                        //Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
                     }
                     NoteController currentNote = note.GetComponent<NoteController>();
                     currentNote.SetNoteDirection(noteDirection);
@@ -192,7 +192,7 @@ public class LaneController : MonoBehaviour
 
     private void Hit(double hitDelay)
     {
-        print($"Hit on {inputIndex} note");
+        //print($"Hit on {inputIndex} note");
 
         //Perfect hit
         if (hitDelay <= LevelManager.Instance.perfectHitMargin)

@@ -45,7 +45,7 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         foreach(var note in loadNotes)
         {
-            float yPosition = ((float)note.timeStamp / (Mathf.Floor((float)LevelManager.GetFullSongDuration()) / GetComponentInParent<GridManager>().GetRows())) * -100f;
+            float yPosition = (float)(-100f * note.timeStamp * _songEditorManager.GetComponentInChildren<GridManager>().GetRows()) / (float)LevelManager.GetFullSongDuration();
             Vector2 chartNoteData = new Vector2(note.noteDirection, yPosition);
             Vector2 localPosition = new Vector2(chartNoteData.x * 100f, chartNoteData.y);
             CreateArrow(localPosition, note.noteDirection, chartNoteData);
@@ -154,6 +154,16 @@ public class EditorGridEvents : MonoBehaviour, IPointerEnterHandler, IPointerExi
             highlightTransform.localPosition = highlightPosition;
         }
     }
+
+    public void ClearNoteObjects()
+    {
+        foreach (Transform child in editorArrowParent)
+            Destroy(child.gameObject);
+
+        chartObjects.Clear();
+    }
+
+    public CHARTTYPE GetChartType() => chartType;
 
     private void SnapPosition(ref Vector3 highlightPosition)
     {
