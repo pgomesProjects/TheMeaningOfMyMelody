@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle Dialog Box",
+                    "type": "Button",
+                    "id": "05b0fa83-ecd3-4fa1-b8fb-614320d509f9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -230,6 +239,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Close Song Editor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b37f4ce-7f9f-4c72-97e8-562d322152fc",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Toggle Dialog Box",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

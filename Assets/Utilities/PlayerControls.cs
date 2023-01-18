@@ -98,6 +98,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle Dialog Box"",
+                    ""type"": ""Button"",
+                    ""id"": ""05b0fa83-ecd3-4fa1-b8fb-614320d509f9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -252,6 +261,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Close Song Editor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b37f4ce-7f9f-4c72-97e8-562d322152fc"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Toggle Dialog Box"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -867,6 +887,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player_RightArrow = m_Player.FindAction("Right Arrow", throwIfNotFound: true);
         m_Player_OpenSongEditor = m_Player.FindAction("Open Song Editor", throwIfNotFound: true);
         m_Player_CloseSongEditor = m_Player.FindAction("Close Song Editor", throwIfNotFound: true);
+        m_Player_ToggleDialogBox = m_Player.FindAction("Toggle Dialog Box", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -947,6 +968,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RightArrow;
     private readonly InputAction m_Player_OpenSongEditor;
     private readonly InputAction m_Player_CloseSongEditor;
+    private readonly InputAction m_Player_ToggleDialogBox;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -959,6 +981,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @RightArrow => m_Wrapper.m_Player_RightArrow;
         public InputAction @OpenSongEditor => m_Wrapper.m_Player_OpenSongEditor;
         public InputAction @CloseSongEditor => m_Wrapper.m_Player_CloseSongEditor;
+        public InputAction @ToggleDialogBox => m_Wrapper.m_Player_ToggleDialogBox;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -992,6 +1015,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CloseSongEditor.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
                 @CloseSongEditor.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
                 @CloseSongEditor.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCloseSongEditor;
+                @ToggleDialogBox.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleDialogBox;
+                @ToggleDialogBox.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleDialogBox;
+                @ToggleDialogBox.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleDialogBox;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1020,6 +1046,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CloseSongEditor.started += instance.OnCloseSongEditor;
                 @CloseSongEditor.performed += instance.OnCloseSongEditor;
                 @CloseSongEditor.canceled += instance.OnCloseSongEditor;
+                @ToggleDialogBox.started += instance.OnToggleDialogBox;
+                @ToggleDialogBox.performed += instance.OnToggleDialogBox;
+                @ToggleDialogBox.canceled += instance.OnToggleDialogBox;
             }
         }
     }
@@ -1192,6 +1221,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnRightArrow(InputAction.CallbackContext context);
         void OnOpenSongEditor(InputAction.CallbackContext context);
         void OnCloseSongEditor(InputAction.CallbackContext context);
+        void OnToggleDialogBox(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
