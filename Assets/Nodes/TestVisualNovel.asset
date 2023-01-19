@@ -16,3 +16,4 @@ MonoBehaviour:
   nodeTitle: Hello World
   graphic: {fileID: 0}
   visualNovelScript: {fileID: 4900000, guid: 542339994f89d274b800e50da0318e72, type: 3}
+  visualNovelEventsScript: {fileID: 4900000, guid: 9bf24b7db0ff1474e94e17db9b5bd719, type: 3}

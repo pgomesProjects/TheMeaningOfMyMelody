@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CutsceneDialogHandler : CutsceneEvent
 {
-    private CustomEvent cutsceneCustomEvents;
+    private CustomEvents cutsceneCustomEvents;
     internal bool canAutoAdvance = false;
     internal bool forceSkip = false;
     internal bool textCompleted = false;
@@ -17,7 +18,7 @@ public class CutsceneDialogHandler : CutsceneEvent
 
     private void Awake()
     {
-        cutsceneCustomEvents = GetComponent<CustomEvent>();
+        cutsceneCustomEvents = GetComponent<CustomEvents>();
     }
 
     public override void OnDialogStart()
@@ -29,11 +30,24 @@ public class CutsceneDialogHandler : CutsceneEvent
         //These are the default options for the cutscene
         ChangeSprite(0);
         SetNameBoxText("Character Name");
+
+        if (cutsceneCustomEvents != null)
+            cutsceneCustomEvents.GenerateEventCommands(dialogLines.Length);
     }
 
     public override void CheckEvents(ref TextWriter.TextWriterSingle textWriterObj)
     {
-        string message = dialogLines[currentLine];
+        string message = dialogLines[currentLine].line;
+
+        if(dialogLines[currentLine].name != null)
+        {
+            SetNameBoxText(dialogLines[currentLine].name);
+            ShowNameBox();
+        }
+        else if (nameBox.activeInHierarchy)
+        {
+            HideNameBox();
+        }
 
         //Get the text to read the text (based on text count and text speed)
         timeToReadText = message.Length / CutsceneController.main.currentTextSpeed;
@@ -205,5 +219,8 @@ public class CutsceneDialogHandler : CutsceneEvent
         //Check for custom events if present
         if (cutsceneCustomEvents != null)
             cutsceneCustomEvents.CustomOnEventComplete();
+
+        //Go back to story menu
+        SceneManager.LoadScene("Menu");
     }
 }

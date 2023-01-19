@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MenuState { START, MAIN, STORY, FREEPLAY, CONFIG, CREDITS }
+
 public class MainMenuController : MonoBehaviour
 {
     private GameObject currentMenuState;
-
-    public enum MenuState { START, MAIN, STORY, FREEPLAY, CONFIG, CREDITS }
 
     [SerializeField] private GameObject startMenu;
     [SerializeField] private GameObject mainMenu;
@@ -26,7 +26,10 @@ public class MainMenuController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentMenuState = startMenu;   
+        currentMenuState = startMenu;
+
+        if (GameData.gameEntered)
+            SwitchMenu(GameData.returnOnMenuState);
     }
 
     private void OnEnable()
@@ -42,6 +45,7 @@ public class MainMenuController : MonoBehaviour
     private void StartToMain()
     {
         SwitchMenu(MenuState.MAIN);
+        GameData.gameEntered = true;
     }
 
     public void StoryMode()

@@ -6,4 +6,5 @@ using UnityEngine;
 public class VisualNovelNode : StoryNode
 {
     public TextAsset visualNovelScript;
+    public TextAsset visualNovelEventsScript;
 }

@@ -41,6 +41,9 @@ public class Node : MonoBehaviour
 
     public void PlaySection()
     {
+        //Return to the story menu when returning
+        GameData.returnOnMenuState = MenuState.STORY;
+
         //Activate node differently based on the node information given
         switch (currentStory.GetType().ToString())
         {
@@ -48,6 +51,7 @@ public class Node : MonoBehaviour
             case "VisualNovelNode":
                 VisualNovelNode visualNovelNode = (VisualNovelNode)currentStory;
                 GameData.currentScriptAsset = visualNovelNode.visualNovelScript;
+                GameData.currentScriptEventsAsset = visualNovelNode.visualNovelEventsScript;
                 SceneManager.LoadScene("Cutscene");
                 break;
             //Go to whichever rhythm game setting is specified

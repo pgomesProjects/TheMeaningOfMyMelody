@@ -2214,6 +2214,7 @@ GameObject:
   - component: {fileID: 1936007525}
   - component: {fileID: 1936007527}
   - component: {fileID: 1936007526}
+  - component: {fileID: 1936007528}
   m_Layer: 5
   m_Name: Prompt
   m_TagString: Untagged
@@ -2337,6 +2338,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936007524}
   m_CullTransparentMesh: 1
+--- !u!114 &1936007528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936007524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f53456959157b9d458179be37c95bc75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toAlpha: 0.2
+  seconds: 2
+  looping: 1
 --- !u!1001 &1974560944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2346,7 +2362,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2517658043461594086, guid: 956dd441bb47b354eb6ff9665061a79a, type: 3}
       propertyPath: m_Name
-      value: Node (1)
+      value: CandySong
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517658043461594086, guid: 956dd441bb47b354eb6ff9665061a79a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2517658043461594087, guid: 956dd441bb47b354eb6ff9665061a79a, type: 3}
       propertyPath: m_Pivot.x
@@ -2724,7 +2744,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2517658043461594086, guid: 956dd441bb47b354eb6ff9665061a79a, type: 3}
       propertyPath: m_Name
-      value: Node
+      value: Chapter0-1
       objectReference: {fileID: 0}
     - target: {fileID: 2517658043461594087, guid: 956dd441bb47b354eb6ff9665061a79a, type: 3}
       propertyPath: m_Pivot.x

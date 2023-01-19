@@ -7,11 +7,17 @@ using TMPro;
 [System.Serializable]
 abstract public class DialogEvent : MonoBehaviour
 {
+    public struct DialogLines
+    {
+        public string name;
+        public string line;
+    }
+
     protected int currentLine;
 
     //The basic objects that any dialog event will need
     [Header("Dialog Objects")]
-    protected string[] dialogLines;
+    protected DialogLines[] dialogLines;
     protected bool dialogWrittenInHistory;
     [SerializeField] [Tooltip("The object that holds the message text.")]
     protected TextMeshProUGUI messageText;
@@ -29,20 +35,26 @@ abstract public class DialogEvent : MonoBehaviour
     public void GenerateDialogLines()
     {
         string[] rawTextList = GameData.currentScriptAsset.text.Split('\n');
-        List<string> allLines = new List<string>();
+        List<DialogLines> allLines = new List<DialogLines>();
         foreach(var line in rawTextList)
         {
             string[] currentRawLine = line.Split(',');
+            DialogLines currentDialogLine = new DialogLines();
             if(currentRawLine.Length > 1)
             {
-                allLines.Add(currentRawLine[1]);
+                currentDialogLine.name = currentRawLine[0];
+                currentDialogLine.line = currentRawLine[1];
             }
             else
             {
-                allLines.Add(currentRawLine[0]);
+                currentDialogLine.line = currentRawLine[0];
             }
+
+            allLines.Add(currentDialogLine);
         }
 
        dialogLines = allLines.ToArray();
+
+        
     }
 }

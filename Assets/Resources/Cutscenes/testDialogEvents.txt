@@ -1,0 +1,6 @@
+Sprite Mel = "Sprites/mel"
+Background placeholder = "Backgrounds/placeholder"
+
+scene placeholder,1
+show Mel left,1
+hide Mel,2
