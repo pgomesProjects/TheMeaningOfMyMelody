@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class SongEditorManager : MonoBehaviour
 {
@@ -382,8 +383,8 @@ public class SongEditorManager : MonoBehaviour
 
     public SongData SaveData()
     {
-        songData.opponentChart = GetChartData(CHARTTYPE.OPPONENT).ToArray();
-        songData.playerChart = GetChartData(CHARTTYPE.PLAYER).ToArray();
+        songData.opponentChart = GetChartData(CHARTTYPE.OPPONENT).OrderBy(note => note.timeStamp).ToArray();
+        songData.playerChart = GetChartData(CHARTTYPE.PLAYER).OrderBy(note => note.timeStamp).ToArray();
         return songData;
     }
     #endregion

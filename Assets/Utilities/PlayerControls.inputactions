@@ -350,7 +350,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AnyButton",
+                    "name": "Start",
                     "type": "Button",
                     "id": "fa47d1e0-f699-4721-a8d5-5cbd70dacd44",
                     "expectedControlType": "Button",
@@ -781,11 +781,11 @@
                 {
                     "name": "",
                     "id": "36ac68df-2821-494a-8daf-5bf28ab4c924",
-                    "path": "<Keyboard>/anyKey",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;Gamepad",
-                    "action": "AnyButton",
+                    "action": "Start",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

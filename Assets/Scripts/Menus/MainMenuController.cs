@@ -20,7 +20,8 @@ public class MainMenuController : MonoBehaviour
     private void Awake()
     {
         playerControls = new PlayerControls();
-        playerControls.UI.AnyButton.performed += _ => StartToMain();
+        playerControls.UI.Start.performed += _ => StartToMain();
+        playerControls.UI.Cancel.performed += _ => Back();
     }
 
     // Start is called before the first frame update
@@ -55,7 +56,17 @@ public class MainMenuController : MonoBehaviour
 
     public void Back()
     {
-        SwitchMenu(MenuState.MAIN);
+        if(currentMenuState != startMenu)
+        {
+            if(currentMenuState == mainMenu)
+            {
+                SwitchMenu(MenuState.START);
+            }
+            else
+            {
+                SwitchMenu(MenuState.MAIN);
+            }
+        }
     }
 
     private void SwitchMenu(MenuState menu)

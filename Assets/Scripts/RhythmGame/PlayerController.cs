@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Closing Song Editor...");
         inSongEditor = false;
+        FindObjectOfType<AudioManager>().ResumeAllSounds();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         songEditor.SetActive(false);
     }
