@@ -383,7 +383,17 @@ public class SongEditorManager : MonoBehaviour
     {
         songData.vocalsVolume = double.Parse(vocalsVolume);
     }
-    
+
+    public void SaveSongName(string songName)
+    {
+        songData.songName = songName;
+    }
+
+    public void SaveCredits(string credits)
+    {
+        songData.songCredits = credits;
+    }
+
     public void ClearNotes()
     {
         foreach(var grid in GetComponentsInChildren<EditorGridEvents>())

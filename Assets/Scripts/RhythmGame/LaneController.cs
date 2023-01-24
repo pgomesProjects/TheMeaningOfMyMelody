@@ -117,7 +117,7 @@ public class LaneController : MonoBehaviour
                     //If the grandparent has a transparency controller, control the transparency of the notes
                     if (transparencyController != null)
                     {
-                        Color adjustAlpha = note.GetComponentInChildren<SpriteRenderer>().color;
+                        Color adjustAlpha = SetNoteColor();
                         adjustAlpha.a = transparencyController.GetAlpha();
                         note.GetComponentInChildren<SpriteRenderer>().color = adjustAlpha;
                         //Debug.Log("Alpha Adjusted: " + adjustAlpha.a);
@@ -171,6 +171,23 @@ public class LaneController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private Color SetNoteColor()
+    {
+        switch (noteDirection)
+        {
+            case NOTETYPE.LEFT:
+                return LevelManager.Instance.leftNote;
+            case NOTETYPE.DOWN:
+                return LevelManager.Instance.downNote;
+            case NOTETYPE.UP:
+                return LevelManager.Instance.upNote;
+            case NOTETYPE.RIGHT:
+                return LevelManager.Instance.rightNote;
+        }
+
+        return new Color(255, 255, 255);
     }
 
     private void OnButtonPress(InputAction.CallbackContext ctx)

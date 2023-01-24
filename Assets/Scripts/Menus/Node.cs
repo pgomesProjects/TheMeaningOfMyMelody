@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class Node : MonoBehaviour
 {
-    [SerializeField] private StoryNode currentStory;
+    private StoryNode currentStory;
 
     [SerializeField] private TextMeshProUGUI chapterNumber;
     [SerializeField] private TextMeshProUGUI chapterTitle;
@@ -49,9 +49,7 @@ public class Node : MonoBehaviour
         {
             //Go to the visual novel scene
             case "VisualNovelNode":
-                VisualNovelNode visualNovelNode = (VisualNovelNode)currentStory;
-                GameData.currentScriptAsset = visualNovelNode.visualNovelScript;
-                GameData.currentScriptEventsAsset = visualNovelNode.visualNovelEventsScript;
+                GameData.currentStoryNode = currentStory;
                 SceneManager.LoadScene("Cutscene");
                 break;
             //Go to whichever rhythm game setting is specified
@@ -60,5 +58,10 @@ public class Node : MonoBehaviour
                 SceneManager.LoadScene(rhythmGameNode.setting);
                 break;
         }
+    }
+
+    public void SetStoryNode(StoryNode story)
+    {
+        currentStory = story;
     }
 }

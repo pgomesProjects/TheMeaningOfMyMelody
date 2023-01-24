@@ -34,7 +34,8 @@ abstract public class DialogEvent : MonoBehaviour
 
     public void GenerateDialogLines()
     {
-        string[] rawTextList = GameData.currentScriptAsset.text.Split('\n');
+        VisualNovelNode visualNovelNode = (VisualNovelNode)GameData.currentStoryNode;
+        string[] rawTextList = visualNovelNode.visualNovelScript.text.Split('\n');
         List<DialogLines> allLines = new List<DialogLines>();
         foreach(var line in rawTextList)
         {

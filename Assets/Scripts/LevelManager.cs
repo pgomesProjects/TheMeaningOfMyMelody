@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -17,8 +18,17 @@ public class LevelManager : MonoBehaviour
     public string CurrentSong;
     private AudioSource currentSongAudioSource;
 
+    [SerializeField] private TextMeshProUGUI songNameText;
+    [SerializeField] private TextMeshProUGUI creditsText;
+
     [SerializeField] private LaneController[] opponentLanes;
     [SerializeField] private LaneController[] playerLanes;
+
+    [Header("Chart Colors")]
+    public Color leftNote;
+    public Color downNote;
+    public Color upNote;
+    public Color rightNote;
 
     public float songDelaySeconds;
     public float marginOfError = 0.1f;
@@ -66,6 +76,8 @@ public class LevelManager : MonoBehaviour
         string directory = ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
         GetFileData(directory);
         FindObjectOfType<SongTimer>().TimerSetup();
+        songNameText.text = "<i>" + currentSongData.songName + "</i>";
+        creditsText.text = "By: " + currentSongData.songCredits;
         Invoke(nameof(StartSong), songDelaySeconds);
     }
 

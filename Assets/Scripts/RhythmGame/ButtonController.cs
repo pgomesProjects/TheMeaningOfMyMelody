@@ -10,7 +10,7 @@ public class ButtonController : MonoBehaviour
     [SerializeField] protected CharacterAnimationController characterAnimator;
 
     private Color defaultColor;
-    [SerializeField] protected Color pressColor;
+    private Color pressColor;
 
     protected SpriteRenderer arrowSpriteRenderer;
 
@@ -23,6 +23,22 @@ public class ButtonController : MonoBehaviour
 
     protected void ButtonPressAction()
     {
+        switch (buttonType)
+        {
+            case NOTETYPE.LEFT:
+                pressColor = LevelManager.Instance.leftNote;
+                break;
+            case NOTETYPE.DOWN:
+                pressColor = LevelManager.Instance.downNote;
+                break;
+            case NOTETYPE.UP:
+                pressColor = LevelManager.Instance.upNote;
+                break;
+            case NOTETYPE.RIGHT:
+                pressColor = LevelManager.Instance.rightNote;
+                break;
+        }
+
         SetColor(pressColor);
         StartCharacterDirection();
     }

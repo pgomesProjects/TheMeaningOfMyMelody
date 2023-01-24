@@ -28,7 +28,8 @@ public class CustomEvents : MonoBehaviour
             commandList[i] = new List<string>();
         }
 
-        string[] rawCommandsList = GameData.currentScriptEventsAsset.text.Split('\n');
+        VisualNovelNode visualNovelNode = (VisualNovelNode)GameData.currentStoryNode;
+        string[] rawCommandsList = visualNovelNode.visualNovelEventsScript.text.Split('\n');
 
         foreach(var commandLine in rawCommandsList)
         {
@@ -228,6 +229,13 @@ public class CustomEvents : MonoBehaviour
 
     public void CustomOnEventComplete()
     {
-
+        foreach(var story in GameData.storyNodes)
+        {
+            if(story == GameData.currentStoryNode)
+            {
+                story.hasViewed = true;
+                break;
+            }
+        }
     }
 }

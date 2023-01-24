@@ -5,7 +5,7 @@ using TMPro;
 
 public class InputFieldChecker : MonoBehaviour
 {
-    public enum INPUTTYPE { ChartBPM, Offset, ScrollSpeed, InstrumentalVolume, VocalsVolume }
+    public enum INPUTTYPE { SongName, SongCredits, ChartBPM, Offset, ScrollSpeed, InstrumentalVolume, VocalsVolume }
 
     [SerializeField] private INPUTTYPE inputType;
     [SerializeField] private double defaultValue = 0;
@@ -25,13 +25,22 @@ public class InputFieldChecker : MonoBehaviour
         {
             SetInputFields();
         }
-        inputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+        if(inputField.contentType != TMP_InputField.ContentType.Standard)
+            inputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
     }
 
     private void SetInputFields()
     {
         switch (inputType)
         {
+            case INPUTTYPE.SongName:
+                inputField.text = LevelManager.Instance.GetSongData().songName;
+                FindObjectOfType<SongEditorManager>().SaveSongName(inputField.text);
+                break;
+            case INPUTTYPE.SongCredits:
+                inputField.text = LevelManager.Instance.GetSongData().songCredits;
+                FindObjectOfType<SongEditorManager>().SaveCredits(inputField.text);
+                break;
             case INPUTTYPE.ChartBPM:
                 inputField.text = LevelManager.Instance.GetSongData().chartBPM.ToString();
                 FindObjectOfType<SongEditorManager>().SaveChartBPM(inputField.text);

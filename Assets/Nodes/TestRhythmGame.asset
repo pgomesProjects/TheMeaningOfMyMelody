@@ -15,5 +15,7 @@ MonoBehaviour:
   header: Song
   nodeTitle: 'Candy - Friday Night Funkin'': Heathers Mod'
   graphic: {fileID: 21300000, guid: 8b360300bc8b4bd44ba8d4521c9e5063, type: 3}
+  hasViewed: 0
+  hasUnlocked: 0
   songName: TestSong
   setting: TestLevel
