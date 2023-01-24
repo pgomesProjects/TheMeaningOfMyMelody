@@ -12,6 +12,7 @@ public class SongEditorManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI songPos;
     [SerializeField] private TextMeshProUGUI sectionPos;
     [SerializeField] private TextMeshProUGUI beatSnap;
+    private List<Vector2> eventChart;
     private List<Vector2> opponentChart;
     private List<Vector2> playerChart;
 
@@ -37,6 +38,7 @@ public class SongEditorManager : MonoBehaviour
     private void OnEnable()
     {
         songData = new SongData();
+        eventChart = new List<Vector2>();
         opponentChart = new List<Vector2>();
         playerChart = new List<Vector2>();
         currentSnapIndex = 3;
@@ -49,8 +51,10 @@ public class SongEditorManager : MonoBehaviour
     {
         switch (chartType)
         {
+            case CHARTTYPE.EVENTS:
+                eventChart.Add(noteData);
+                break;
             case CHARTTYPE.OPPONENT:
-                //Debug.Log("Adding Note: " + noteData);
                 opponentChart.Add(noteData);
                 break;
             case CHARTTYPE.PLAYER:
@@ -63,6 +67,9 @@ public class SongEditorManager : MonoBehaviour
     {
         switch (chartType)
         {
+            case CHARTTYPE.EVENTS:
+                eventChart.Remove(noteData);
+                break;
             case CHARTTYPE.OPPONENT:
                 opponentChart.Remove(noteData);
                 break;
@@ -78,6 +85,9 @@ public class SongEditorManager : MonoBehaviour
 
         switch (chartType)
         {
+            case CHARTTYPE.EVENTS:
+                chartCopy = eventChart;
+                break;
             case CHARTTYPE.OPPONENT:
                 chartCopy = opponentChart;
                 break;
@@ -100,6 +110,8 @@ public class SongEditorManager : MonoBehaviour
     {
         switch (chartType)
         {
+            case CHARTTYPE.EVENTS:
+                return eventChart.IndexOf(noteData);
             case CHARTTYPE.OPPONENT:
                 return opponentChart.IndexOf(noteData);
             case CHARTTYPE.PLAYER:
@@ -115,6 +127,9 @@ public class SongEditorManager : MonoBehaviour
 
         switch (chartType)
         {
+            case CHARTTYPE.EVENTS:
+                chartCopy = eventChart;
+                break;
             case CHARTTYPE.OPPONENT:
                 chartCopy = opponentChart;
                 break;
@@ -379,6 +394,16 @@ public class SongEditorManager : MonoBehaviour
 
         playerChart.Clear();
         opponentChart.Clear();
+    }
+
+    public void ClearEvents()
+    {
+        foreach (var grid in GetComponentsInChildren<EditorGridEvents>())
+        {
+            if (grid.GetChartType() == CHARTTYPE.EVENTS)
+                grid.ClearNoteObjects();
+        }
+        eventChart.Clear();
     }
 
     public SongData SaveData()

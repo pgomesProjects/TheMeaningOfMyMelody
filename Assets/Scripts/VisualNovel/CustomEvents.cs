@@ -176,14 +176,14 @@ public class CustomEvents : MonoBehaviour
             if (characterSprites.Where(bg => bg.name == spriteName).SingleOrDefault() != null)
             {
                 spriteObject = new GameObject();
-                spriteObject.transform.parent = spriteHolder;
+                spriteObject.transform.SetParent(spriteHolder, false);
                 spriteObject.name = spriteName;
 
                 spriteObject.AddComponent<RectTransform>();
                 spriteObject.AddComponent<Image>();
 
                 spriteObject.GetComponent<Image>().sprite = characterSprites.Where(bg => bg.name == spriteName).SingleOrDefault();
-                spriteObject.GetComponent<Image>().SetNativeSize();
+                spriteObject.GetComponent<RectTransform>().sizeDelta = new Vector2(spriteObject.GetComponent<Image>().sprite.rect.width, spriteObject.GetComponent<Image>().sprite.rect.height);
             }
             else
             {
@@ -199,6 +199,8 @@ public class CustomEvents : MonoBehaviour
 
         Vector2 position = new Vector2(0, 0);
 
+        Debug.Log("Position: " + pos);
+
         switch (pos)
         {
             case "left":
@@ -212,7 +214,7 @@ public class CustomEvents : MonoBehaviour
                 break;
         }
 
-        spriteObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
+        spriteObject.GetComponent<RectTransform>().anchoredPosition = position;
     }
 
     private void HideSprite(string spriteName)

@@ -13,14 +13,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputAction changeSection;
     [SerializeField] private InputAction changeStrumSnap;
     private PlayerControls playerControls;
-    private bool inSongEditor;
 
     private void Awake()
     {
         playerControls = new PlayerControls();
         songEditor.SetActive(false);
         _songEditorManager = songEditor.GetComponent<SongEditorManager>();
-        inSongEditor = false;
     }
 
     private void OnEnable()
@@ -59,22 +57,22 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Opening Song Editor...");
         songEditor.SetActive(true);
-        inSongEditor = true;
+        LevelManager.Instance.SetInSongEditor(true);
         FindObjectOfType<AudioManager>().PauseAllSounds();
     }
 
     public void CloseSongEditor(InputAction.CallbackContext ctx)
     {
         Debug.Log("Closing Song Editor...");
-        inSongEditor = false;
         FindObjectOfType<AudioManager>().ResumeAllSounds();
+        LevelManager.Instance.SetInSongEditor(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         songEditor.SetActive(false);
     }
 
     public void OnChartScroll(InputAction.CallbackContext ctx)
     {
-        if (inSongEditor)
+        if (LevelManager.Instance.InSongEditor())
         {
             float inputValue = ctx.ReadValue<float>();
             Debug.Log("Scroll Value: " + inputValue);
@@ -91,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeBeatSnap(InputAction.CallbackContext ctx)
     {
-        if (inSongEditor)
+        if (LevelManager.Instance.InSongEditor())
         {
             float inputValue = ctx.ReadValue<float>();
             switch (inputValue)
@@ -108,7 +106,7 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeSection(InputAction.CallbackContext ctx)
     {
-        if (inSongEditor)
+        if (LevelManager.Instance.InSongEditor())
         {
             float inputValue = ctx.ReadValue<float>();
             switch (inputValue)
@@ -125,7 +123,7 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeStepSnap(InputAction.CallbackContext ctx)
     {
-        if (inSongEditor)
+        if (LevelManager.Instance.InSongEditor())
         {
             float inputValue = ctx.ReadValue<float>();
             switch (inputValue)

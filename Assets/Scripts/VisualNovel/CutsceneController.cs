@@ -25,10 +25,13 @@ public class CutsceneController : MonoBehaviour
     internal float currentTextSpeed;
     public Animator spriteAnimator;
 
+    private bool isPaused = false;
+
     private void Awake()
     {
         main = this;
         isDialogActive = false;
+        isPaused = false;
         playerControls = new PlayerControls();
         playerControls.UI.Click.performed += _ => {
             //Advance text if they are not selecting a button
@@ -41,7 +44,7 @@ public class CutsceneController : MonoBehaviour
     public void AdvanceText()
     {
         //If the dialog is activated and not in the control / history menu
-        if (isDialogActive && !DialogController.main.historyLogActive)
+        if (isDialogActive && !DialogController.main.historyLogActive && !isPaused)
         {
             //If the dialog box is hidden, unhide it
             if (!DialogController.main.isDialogShown)
@@ -115,5 +118,11 @@ public class CutsceneController : MonoBehaviour
     private void OnDisable()
     {
         playerControls.Disable();
+    }
+
+    public bool IsPaused() => isPaused;
+    public void SetPaused(bool paused)
+    {
+        isPaused = paused;
     }
 }

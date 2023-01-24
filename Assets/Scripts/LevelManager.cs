@@ -12,6 +12,8 @@ public class LevelManager : MonoBehaviour
 
     public static LevelManager Instance;
 
+    private bool isPaused;
+    private bool inSongEditor;
     public string CurrentSong;
     private AudioSource currentSongAudioSource;
 
@@ -37,6 +39,8 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isPaused = false;
+        inSongEditor = false;
         UpdateBoardSettings();
         SongSetup();
     }
@@ -61,6 +65,7 @@ public class LevelManager : MonoBehaviour
         currentSongAudioSource = FindObjectOfType<AudioManager>().GetSoundAudioSource(CurrentSong + "Inst");
         string directory = ReadSongData.GetSongDataFromFile(CurrentSong, CurrentSong);
         GetFileData(directory);
+        FindObjectOfType<SongTimer>().TimerSetup();
         Invoke(nameof(StartSong), songDelaySeconds);
     }
 
@@ -114,4 +119,15 @@ public class LevelManager : MonoBehaviour
 
     public Note[] GetOpponentChartData() => currentSongData.opponentChart;
     public Note[] GetPlayerChartData() => currentSongData.playerChart;
+
+    public bool IsPaused() => isPaused;
+    public void SetPaused(bool paused)
+    {
+        isPaused = paused;
+    }
+    public bool InSongEditor() => inSongEditor;
+    public void SetInSongEditor(bool songEditor)
+    {
+        inSongEditor = songEditor;
+    }
 }

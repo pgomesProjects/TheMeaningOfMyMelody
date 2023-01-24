@@ -112,7 +112,7 @@ public class LaneController : MonoBehaviour
             {
                 if (LevelManager.GetSongTime() >= timeStamps[spawnIndex] - LevelManager.Instance.GetScrollSpeedTime())
                 {
-                    Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
+                    //Debug.Log("Note Spawned At: " + LevelManager.GetSongTime());
                     var note = Instantiate(notePrefab, transform);
                     //If the grandparent has a transparency controller, control the transparency of the notes
                     if (transparencyController != null)
