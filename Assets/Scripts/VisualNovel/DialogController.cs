@@ -97,14 +97,16 @@ public class DialogController : MonoBehaviour
         if (CutsceneController.main.isSkipping)
         {
             CutsceneController.main.currentTextSpeed = CutsceneController.main.textSpeed * CutsceneController.main.skipSpeedMultiplier;
-            CutsceneController.main.spriteAnimator.SetFloat("Multiplier", 10);
+            if(CutsceneController.main.spriteAnimator != null)
+                CutsceneController.main.spriteAnimator.SetFloat("Multiplier", 10);
             CutsceneController.main.CheckForAdvance();
         }
         //If the scene is no longer skipping, set the text speed to normal and the UI animation speeds to normal
         else
         {
             CutsceneController.main.currentTextSpeed = CutsceneController.main.textSpeed;
-            CutsceneController.main.spriteAnimator.SetFloat("Multiplier", 1);
+            if (CutsceneController.main.spriteAnimator != null)
+                CutsceneController.main.spriteAnimator.SetFloat("Multiplier", 1);
             FindObjectOfType<CutsceneDialogHandler>().CheckForceSkip();
         }
     }

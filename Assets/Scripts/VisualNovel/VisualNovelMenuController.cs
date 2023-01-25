@@ -12,7 +12,17 @@ public class VisualNovelMenuController : MonoBehaviour
     private void Awake()
     {
         playerControls = new PlayerControls();
-        playerControls.UI.Pause.performed += _ => TogglePause();
+        playerControls.UI.Pause.performed += _ =>
+        {
+            if (DialogController.main.historyLogActive)
+            {
+                DialogController.main.HideHistoryLog();
+            }
+            else
+            {
+                TogglePause();
+            }
+        };
     }
 
     private void OnEnable()
