@@ -12,4 +12,12 @@ public class StoryNode : ScriptableObject
 
     public bool hasViewed;
     public bool hasUnlocked;
+
+    public bool IsEqual(StoryNode story)
+    {
+        if (story.header == header && story.nodeTitle == nodeTitle && story.graphic == graphic)
+            return true;
+
+        return false;
+    }
 }

@@ -231,7 +231,7 @@ public class CustomEvents : MonoBehaviour
     {
         foreach(var story in GameData.storyNodes)
         {
-            if(story == GameData.currentStoryNode)
+            if(story.IsEqual(GameData.currentStoryNode))
             {
                 story.hasViewed = true;
                 break;

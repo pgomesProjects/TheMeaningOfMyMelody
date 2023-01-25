@@ -13,11 +13,26 @@ public class StoryTreeController : MonoBehaviour
     [SerializeField] private StoryNode[] storyNodes;
     [SerializeField] private Node nodeObject;
 
+    private StoryNode[] storyNodeInstances;
+
     private float verticalSpacing = 278f;
 
     private void Awake()
     {
-        GameData.storyNodes = storyNodes;
+        if(GameData.storyNodes == null)
+        {
+            CreateInstances();
+            GameData.storyNodes = storyNodeInstances;
+        }
+    }
+
+    private void CreateInstances()
+    {
+        storyNodeInstances = new StoryNode[storyNodes.Length];
+        for (int i = 0; i < storyNodes.Length; i++)
+        {
+            storyNodeInstances[i] = Instantiate(storyNodes[i]);
+        }
     }
 
     // Start is called before the first frame update
@@ -50,9 +65,6 @@ public class StoryTreeController : MonoBehaviour
 
     private void CheckForUnlock()
     {
-        //Make sure the first node is always unlocked
-        GameData.storyNodes[0].hasUnlocked = true;
-
         for (int i = 0; i < GameData.storyNodes.Length - 1; i++)
         {
             if (GameData.storyNodes[i].hasViewed)
